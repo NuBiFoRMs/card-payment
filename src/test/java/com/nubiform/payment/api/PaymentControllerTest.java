@@ -2,6 +2,7 @@ package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.api.vo.CancelRequest;
+import com.nubiform.payment.api.vo.PaymentRequest;
 import com.nubiform.payment.api.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ class PaymentControllerTest {
 
     SubmitRequest submitRequest;
     CancelRequest cancelRequest;
+    PaymentRequest paymentRequest;
 
     @BeforeEach
     void setUp() {
@@ -40,6 +42,9 @@ class PaymentControllerTest {
         cancelRequest = new CancelRequest();
         cancelRequest.setId("12345678901234567890");
         cancelRequest.setAmount(1000L);
+
+        paymentRequest = new PaymentRequest();
+        paymentRequest.setId("12345678901234567890");
     }
 
     @Test
@@ -172,8 +177,21 @@ class PaymentControllerTest {
 
     @Test
     public void getPayment() throws Exception {
-        mockMvc.perform(get("/api/v1/payment"))
+        mockMvc.perform(get("/api/v1/payment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(paymentRequest)))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getPaymentWrongId() throws Exception {
+        paymentRequest.setId("1234567890");
+
+        mockMvc.perform(get("/api/v1/payment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(paymentRequest)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 }

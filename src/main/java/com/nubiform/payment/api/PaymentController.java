@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.nubiform.payment.api.vo.CancelRequest;
+import com.nubiform.payment.api.vo.PaymentRequest;
 import com.nubiform.payment.api.vo.Response;
 import com.nubiform.payment.api.vo.SubmitRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +43,12 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ResponseEntity getPayment() {
-        log.debug("getPayment");
-        return ResponseEntity.ok().build();
+    public ResponseEntity getPayment(@Valid @RequestBody PaymentRequest paymentRequest, BindingResult bindingResult) {
+        log.debug("getPayment: {}", paymentRequest);
+        if (bindingResult.hasErrors()) {
+            log.debug("bindingResult: {}", bindingResult);
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new Response());
     }
 }
