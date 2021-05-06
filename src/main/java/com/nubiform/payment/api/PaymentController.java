@@ -1,9 +1,6 @@
 package com.nubiform.payment.api;
 
-import com.nubiform.payment.api.vo.CancelRequest;
-import com.nubiform.payment.api.vo.PaymentRequest;
-import com.nubiform.payment.api.vo.Response;
-import com.nubiform.payment.api.vo.SubmitRequest;
+import com.nubiform.payment.api.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -49,6 +46,6 @@ public class PaymentController {
             log.debug("bindingResult: {}", bindingResult);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new Response());
+        return ResponseEntity.ok(new PaymentResponse());
     }
 }
