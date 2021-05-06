@@ -1,2 +1,6 @@
+logging:
+  level:
+    com.nubiform: DEBUG
+
 # swagger-ui custom path
 springdoc.swagger-ui.path: /swagger-ui.html
