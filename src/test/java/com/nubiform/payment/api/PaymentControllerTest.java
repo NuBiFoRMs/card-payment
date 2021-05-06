@@ -33,7 +33,7 @@ class PaymentControllerTest {
         submitRequest.setExpiration("1234");
         submitRequest.setCvc("123");
         submitRequest.setInstallment(0);
-        submitRequest.setAmount(100);
+        submitRequest.setAmount(1000L);
     }
 
     @Test
@@ -91,7 +91,7 @@ class PaymentControllerTest {
 
     @Test
     public void postPaymentWrongAmountMin() throws Exception {
-        submitRequest.setAmount(99);
+        submitRequest.setAmount(99L);
 
         mockMvc.perform(post("/api/v1/payment")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +102,7 @@ class PaymentControllerTest {
 
     @Test
     public void postPaymentWrongAmountMax() throws Exception {
-        submitRequest.setAmount(1000000001);
+        submitRequest.setAmount(1000000001L);
 
         mockMvc.perform(post("/api/v1/payment")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +113,7 @@ class PaymentControllerTest {
 
     @Test
     public void postPaymentWrongVat() throws Exception {
-        submitRequest.setVat(-1);
+        submitRequest.setVat(-1L);
 
         mockMvc.perform(post("/api/v1/payment")
                 .contentType(MediaType.APPLICATION_JSON)
