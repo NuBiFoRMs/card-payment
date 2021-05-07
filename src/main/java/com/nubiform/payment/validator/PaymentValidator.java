@@ -21,7 +21,7 @@ public class PaymentValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         PaymentRequest paymentRequest = (PaymentRequest) target;
-        if (!historyRepository.existsById(Long.valueOf(paymentRequest.getId()))) {
+        if (!historyRepository.existsById(paymentRequest.getLongId())) {
             errors.rejectValue("id", "invalid.id", new Object[]{paymentRequest.getId()}, "invalid id");
         }
     }

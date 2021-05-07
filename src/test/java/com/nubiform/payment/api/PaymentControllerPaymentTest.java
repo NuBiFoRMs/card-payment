@@ -49,7 +49,7 @@ class PaymentControllerPaymentTest {
         Long id = paymentService.submit(submitRequest).getId();
 
         paymentRequest = new PaymentRequest();
-        paymentRequest.setId(StringUtils.leftPad(String.valueOf(id), 20, "0"));
+        paymentRequest.setId("N" + StringUtils.leftPad(String.valueOf(id), 19, "0"));
     }
 
     @Test
