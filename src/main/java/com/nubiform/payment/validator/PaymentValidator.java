@@ -1,7 +1,7 @@
 package com.nubiform.payment.validator;
 
-import com.nubiform.payment.api.vo.PaymentRequest;
 import com.nubiform.payment.repository.HistoryRepository;
+import com.nubiform.payment.vo.PaymentRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

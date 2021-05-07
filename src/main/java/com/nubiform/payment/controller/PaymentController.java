@@ -1,7 +1,8 @@
-package com.nubiform.payment.api;
+package com.nubiform.payment.controller;
 
-import com.nubiform.payment.api.vo.*;
+import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.validator.PaymentValidator;
+import com.nubiform.payment.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

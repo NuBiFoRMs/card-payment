@@ -1,8 +1,5 @@
-package com.nubiform.payment.api;
+package com.nubiform.payment.service;
 
-import com.nubiform.payment.api.vo.Card;
-import com.nubiform.payment.api.vo.SentData;
-import com.nubiform.payment.api.vo.SubmitRequest;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.History;
 import com.nubiform.payment.domain.Sent;
@@ -10,6 +7,10 @@ import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.security.Encryption;
+import com.nubiform.payment.vo.Card;
+import com.nubiform.payment.vo.PaymentRequest;
+import com.nubiform.payment.vo.SentData;
+import com.nubiform.payment.vo.SubmitRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -58,5 +59,9 @@ public class PaymentService {
         Sent newSent = sentRepository.save(sent);
 
         return newSent;
+    }
+
+    public void payment(PaymentRequest paymentRequest) {
+//        historyRepository.findById(paymentRequest.getId())
     }
 }

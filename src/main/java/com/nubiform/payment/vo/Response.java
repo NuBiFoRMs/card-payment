@@ -1,4 +1,4 @@
-package com.nubiform.payment.api.vo;
+package com.nubiform.payment.vo;
 
 import lombok.Data;
 

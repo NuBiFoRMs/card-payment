@@ -1,9 +1,9 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nubiform.payment.api.vo.CancelRequest;
-import com.nubiform.payment.api.vo.PaymentRequest;
-import com.nubiform.payment.api.vo.SubmitRequest;
+import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.PaymentRequest;
+import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
