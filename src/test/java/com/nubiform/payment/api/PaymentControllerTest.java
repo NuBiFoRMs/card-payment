@@ -40,11 +40,11 @@ class PaymentControllerTest {
         submitRequest.setAmount(1000L);
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId("12345678901234567890");
+        cancelRequest.setId("1234567890");
         cancelRequest.setAmount(1000L);
 
         paymentRequest = new PaymentRequest();
-        paymentRequest.setId("12345678901234567890");
+        paymentRequest.setId("1234567890");
     }
 
     @Test
