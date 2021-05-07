@@ -1,6 +1,8 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.domain.Sent;
+import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.PaymentRequest;
 import com.nubiform.payment.vo.SubmitRequest;
@@ -11,9 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -22,6 +27,9 @@ class PaymentControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    SentRepository sentRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -49,11 +57,20 @@ class PaymentControllerTest {
 
     @Test
     public void postPayment() throws Exception {
-        mockMvc.perform(post("/api/v1/payment")
+        MvcResult mvcResult = mockMvc.perform(post("/api/v1/payment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.data").exists())
+                .andReturn();
+
+        String responseBody = mvcResult.getResponse().getContentAsString();
+        Response response = objectMapper.readValue(responseBody, Response.class);
+        Sent sent = sentRepository.findById(Long.valueOf(response.getId())).orElse(null);
+
+        assertNotNull(sent);
     }
 
     @Test
