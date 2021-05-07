@@ -1,9 +1,12 @@
 package com.nubiform.payment.api;
 
 import com.nubiform.payment.api.vo.Card;
+import com.nubiform.payment.api.vo.SentData;
 import com.nubiform.payment.api.vo.SubmitRequest;
+import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.History;
 import com.nubiform.payment.domain.Sent;
+import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.security.Encryption;
@@ -21,6 +24,7 @@ import javax.transaction.Transactional;
 public class PaymentService {
 
     private final HistoryRepository historyRepository;
+    private final BalanceRepository balanceRepository;
     private final SentRepository sentRepository;
 
     private final ModelMapper modelMapper;
@@ -38,7 +42,14 @@ public class PaymentService {
                 .build();
         History newHistory = historyRepository.save(history);
 
-        StringBuilder data = new StringBuilder();
+        Balance balance = modelMapper.map(history, Balance.class);
+        balance.setStatus("PAYMENT");
+        Balance newBalance = balanceRepository.save(balance);
+
+        SentData data = modelMapper.map(submitRequest, SentData.class);
+        data.setType(newHistory.getType());
+        data.setId(newHistory.getId());
+        data.setEncryptedCard(newHistory.getCard());
 
         Sent sent = Sent.builder()
                 .id(newHistory.getId())

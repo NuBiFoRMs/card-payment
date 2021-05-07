@@ -10,6 +10,7 @@ spring:
 logging:
   level:
     com.nubiform: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 # swagger-ui custom path
 springdoc.swagger-ui.path: /swagger-ui.html
