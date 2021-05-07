@@ -1,6 +1,7 @@
 package com.nubiform.payment.controller;
 
 import com.nubiform.payment.service.PaymentService;
+import com.nubiform.payment.validator.CancelValidator;
 import com.nubiform.payment.validator.PaymentValidator;
 import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.PaymentRequest;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 public class PaymentController {
 
     private final PaymentValidator paymentValidator;
+    private final CancelValidator cancelValidator;
 
     private final PaymentService paymentService;
 
@@ -36,6 +38,11 @@ public class PaymentController {
     @InitBinder("paymentRequest")
     public void paymentInitBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(paymentValidator);
+    }
+
+    @InitBinder("cancelRequest")
+    public void cancelInitBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(cancelValidator);
     }
 
     @PostMapping
