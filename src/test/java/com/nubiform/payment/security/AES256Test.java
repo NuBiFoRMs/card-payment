@@ -1,4 +1,4 @@
-package com.nubiform.payment.config;
+package com.nubiform.payment.security;
 
 import com.nubiform.payment.api.vo.Card;
 import org.junit.jupiter.api.Test;
