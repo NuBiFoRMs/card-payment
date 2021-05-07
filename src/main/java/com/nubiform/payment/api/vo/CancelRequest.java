@@ -1,14 +1,12 @@
 package com.nubiform.payment.api.vo;
 
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 
 @Data
-@ToString
 public class CancelRequest {
 
     public static final double VAT_RATE = 11D;
