@@ -26,7 +26,10 @@ public class SentData {
 
     private String encryptedCard;
 
-    private String spare;
+    private String getIdString(Long id) {
+        if (id == null) return StringUtils.leftPad("", 20, " ");
+        return StringUtils.leftPad(String.valueOf(id), 20, "0");
+    }
 
     @Override
     public String toString() {
@@ -35,7 +38,7 @@ public class SentData {
                 // 문자 10
                 .append(StringUtils.rightPad(type, 10, " "))
                 // 문자 20
-                .append(StringUtils.leftPad(String.valueOf(id), 20, "0"))
+                .append(getIdString(id))
                 // 문자 20
                 .append(StringUtils.rightPad(card, 20, " "))
                 // 숫자(0) 2
@@ -49,11 +52,11 @@ public class SentData {
                 // 숫자(0) 10
                 .append(StringUtils.leftPad(String.valueOf(vat), 10, "0"))
                 // 문자 20
-                .append(StringUtils.leftPad(String.valueOf(originId), 20, "0"))
+                .append(getIdString(originId))
                 // 문자 300
                 .append(StringUtils.rightPad(encryptedCard, 300, " "))
                 // 문자 47
-                .append(StringUtils.rightPad(spare, 47, " "))
+                .append(StringUtils.rightPad("", 47, " "))
         ;
         return StringUtils.leftPad(String.valueOf(data.length()), 4, " ") + data.toString();
     }
