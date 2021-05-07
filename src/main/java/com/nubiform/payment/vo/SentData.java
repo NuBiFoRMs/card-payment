@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 public class SentData {
 
+    public static final String PRE_FIX = "N";
+
     private String type;
 
     private Long id;
@@ -28,7 +30,7 @@ public class SentData {
 
     private String getIdString(Long id) {
         if (id == null) return StringUtils.leftPad("", 20, " ");
-        return StringUtils.leftPad(String.valueOf(id), 20, "0");
+        return PRE_FIX + StringUtils.leftPad(String.valueOf(id), 19, "0");
     }
 
     @Override

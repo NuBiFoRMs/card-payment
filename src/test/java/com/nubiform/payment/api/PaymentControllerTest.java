@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,26 +69,8 @@ class PaymentControllerTest {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
         Response response = objectMapper.readValue(responseBody, Response.class);
-        Sent sent = sentRepository.findById(Long.valueOf(response.getId())).orElse(null);
+        Sent sent = sentRepository.findById(response.getLongId()).orElse(null);
 
         assertNotNull(sent);
-    }
-
-    @Test
-    public void delPayment() throws Exception {
-        mockMvc.perform(delete("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cancelRequest)))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getPayment() throws Exception {
-        mockMvc.perform(get("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(paymentRequest)))
-                .andDo(print())
-                .andExpect(status().isOk());
     }
 }

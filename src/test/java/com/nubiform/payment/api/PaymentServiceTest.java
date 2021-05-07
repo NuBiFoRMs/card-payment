@@ -1,8 +1,9 @@
 package com.nubiform.payment.api;
 
-import com.nubiform.payment.api.vo.SubmitRequest;
 import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.SentRepository;
+import com.nubiform.payment.service.PaymentService;
+import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
