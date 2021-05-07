@@ -1,12 +1,12 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nubiform.payment.api.vo.CancelRequest;
-import com.nubiform.payment.api.vo.PaymentRequest;
-import com.nubiform.payment.api.vo.Response;
-import com.nubiform.payment.api.vo.SubmitRequest;
 import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.SentRepository;
+import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.PaymentRequest;
+import com.nubiform.payment.vo.Response;
+import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PaymentControllerTest {
+class PaymentControllerSubmitTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -49,11 +49,11 @@ class PaymentControllerTest {
         submitRequest.setAmount(1000L);
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId("12345678901234567890");
+        cancelRequest.setId("1234567890");
         cancelRequest.setAmount(1000L);
 
         paymentRequest = new PaymentRequest();
-        paymentRequest.setId("12345678901234567890");
+        paymentRequest.setId("1234567890");
     }
 
     @Test
@@ -69,26 +69,8 @@ class PaymentControllerTest {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
         Response response = objectMapper.readValue(responseBody, Response.class);
-        Sent sent = sentRepository.findById(Long.valueOf(response.getId())).orElse(null);
+        Sent sent = sentRepository.findById(response.getLongId()).orElse(null);
 
         assertNotNull(sent);
-    }
-
-    @Test
-    public void delPayment() throws Exception {
-        mockMvc.perform(delete("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cancelRequest)))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getPayment() throws Exception {
-        mockMvc.perform(get("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(paymentRequest)))
-                .andDo(print())
-                .andExpect(status().isOk());
     }
 }

@@ -1,6 +1,11 @@
-package com.nubiform.payment.api;
+package com.nubiform.payment.controller;
 
-import com.nubiform.payment.api.vo.*;
+import com.nubiform.payment.service.PaymentService;
+import com.nubiform.payment.validator.PaymentValidator;
+import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.PaymentRequest;
+import com.nubiform.payment.vo.Response;
+import com.nubiform.payment.vo.SubmitRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -17,13 +22,20 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/payment")
 public class PaymentController {
 
+    private final PaymentValidator paymentValidator;
+
     private final PaymentService paymentService;
 
     private final ModelMapper modelMapper;
 
     @InitBinder("submitRequest")
-    public void initBinder(WebDataBinder webDataBinder) {
+    public void submitInitBinder(WebDataBinder webDataBinder) {
 
+    }
+
+    @InitBinder("paymentRequest")
+    public void paymentInitBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(paymentValidator);
     }
 
     @PostMapping
@@ -47,12 +59,12 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ResponseEntity getPayment(@Valid @RequestBody PaymentRequest paymentRequest, BindingResult bindingResult) {
+    public ResponseEntity getPayment(@Valid @RequestBody PaymentRequest paymentRequest, BindingResult bindingResult) throws Exception {
         log.debug("getPayment: {}", paymentRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new PaymentResponse());
+        return ResponseEntity.ok(paymentService.payment(paymentRequest));
     }
 }

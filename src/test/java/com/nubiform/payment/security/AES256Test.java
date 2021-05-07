@@ -1,6 +1,6 @@
 package com.nubiform.payment.security;
 
-import com.nubiform.payment.api.vo.Card;
+import com.nubiform.payment.vo.Card;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,10 +1,12 @@
-package com.nubiform.payment.api.vo;
+package com.nubiform.payment.vo;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 @Data
 public class SentData {
+
+    public static final String PRE_FIX = "N";
 
     private String type;
 
@@ -26,9 +28,9 @@ public class SentData {
 
     private String encryptedCard;
 
-    private String getIdString(Long id) {
+    private String getStringId(Long id) {
         if (id == null) return StringUtils.leftPad("", 20, " ");
-        return StringUtils.leftPad(String.valueOf(id), 20, "0");
+        return PRE_FIX + StringUtils.leftPad(String.valueOf(id), 19, "0");
     }
 
     @Override
@@ -38,7 +40,7 @@ public class SentData {
                 // 문자 10
                 .append(StringUtils.rightPad(type, 10, " "))
                 // 문자 20
-                .append(getIdString(id))
+                .append(getStringId(id))
                 // 문자 20
                 .append(StringUtils.rightPad(card, 20, " "))
                 // 숫자(0) 2
@@ -52,7 +54,7 @@ public class SentData {
                 // 숫자(0) 10
                 .append(StringUtils.leftPad(String.valueOf(vat), 10, "0"))
                 // 문자 20
-                .append(getIdString(originId))
+                .append(getStringId(originId))
                 // 문자 300
                 .append(StringUtils.rightPad(encryptedCard, 300, " "))
                 // 문자 47
