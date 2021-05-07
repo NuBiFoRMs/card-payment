@@ -7,10 +7,7 @@ import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.security.Encryption;
-import com.nubiform.payment.vo.Card;
-import com.nubiform.payment.vo.PaymentRequest;
-import com.nubiform.payment.vo.SentData;
-import com.nubiform.payment.vo.SubmitRequest;
+import com.nubiform.payment.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -61,7 +58,11 @@ public class PaymentService {
         return newSent;
     }
 
-    public void payment(PaymentRequest paymentRequest) {
-//        historyRepository.findById(paymentRequest.getId())
+    public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {
+        History history = historyRepository.findById(paymentRequest.getLongId()).orElse(null);
+        PaymentResponse paymentResponse = modelMapper.map(history, PaymentResponse.class);
+        Card card = new Card(encryption.decrypt(history.getCard()));
+        modelMapper.map(card, paymentResponse);
+        return paymentResponse;
     }
 }
