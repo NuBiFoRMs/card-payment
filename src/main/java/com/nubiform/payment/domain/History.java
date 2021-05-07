@@ -22,7 +22,11 @@ public class History {
 
     private String card;
 
+    private Integer installment;
+
     private Long amount;
 
     private Long vat;
+
+    private Long originId;
 }

@@ -11,6 +11,7 @@ import javax.persistence.Version;
 @Builder
 @Getter
 @Setter
+@ToString
 @Entity
 public class Balance {
 
@@ -21,10 +22,21 @@ public class Balance {
 
     private String card;
 
+    private Integer installment;
+
     private Long amount;
 
     private Long vat;
 
     @Version
     private Long version;
+
+    public boolean cancel(Long amount, Long vat) {
+        if (this.amount - amount < 0) return false;
+        if (this.vat - vat < 0) return false;
+        this.amount -= amount;
+        this.vat -= vat;
+        if (this.amount == 0 && this.vat == 0) this.status = "CANCEL";
+        return true;
+    }
 }

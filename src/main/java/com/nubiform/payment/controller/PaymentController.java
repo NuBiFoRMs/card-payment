@@ -1,6 +1,7 @@
 package com.nubiform.payment.controller;
 
 import com.nubiform.payment.service.PaymentService;
+import com.nubiform.payment.validator.CancelValidator;
 import com.nubiform.payment.validator.PaymentValidator;
 import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.PaymentRequest;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 public class PaymentController {
 
     private final PaymentValidator paymentValidator;
+    private final CancelValidator cancelValidator;
 
     private final PaymentService paymentService;
 
@@ -38,6 +40,11 @@ public class PaymentController {
         webDataBinder.addValidators(paymentValidator);
     }
 
+    @InitBinder("cancelRequest")
+    public void cancelInitBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(cancelValidator);
+    }
+
     @PostMapping
     public ResponseEntity<Response> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
         log.debug("postPayment: {}", submitRequest);
@@ -49,13 +56,13 @@ public class PaymentController {
     }
 
     @DeleteMapping
-    public ResponseEntity delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) {
+    public ResponseEntity delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
         log.debug("delPayment: {}", cancelRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new Response());
+        return ResponseEntity.ok(modelMapper.map(paymentService.cancel(cancelRequest), Response.class));
     }
 
     @GetMapping
