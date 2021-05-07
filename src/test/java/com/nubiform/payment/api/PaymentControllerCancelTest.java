@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,17 +54,22 @@ class PaymentControllerCancelTest {
 
         cancelRequest = new CancelRequest();
         cancelRequest.setId(id);
-        cancelRequest.setAmount(1000L);
+        cancelRequest.setAmount(10000L);
 
         System.out.println(cancelRequest);
     }
 
     @Test
     public void delPayment() throws Exception {
-        mockMvc.perform(delete("/api/v1/payment")
+        MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseBody = mvcResult.getResponse().getContentAsString();
+
+        System.out.println(balanceRepository.findById(1L).orElse(null));
     }
 }

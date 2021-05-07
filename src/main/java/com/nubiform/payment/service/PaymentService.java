@@ -12,8 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,27 +34,56 @@ public class PaymentService {
         History history = History.builder()
                 .type("PAYMENT")
                 .card(encryption.encrypt(card.toData()))
+                .installment(submitRequest.getInstallment())
                 .amount(submitRequest.getAmount())
                 .vat(submitRequest.getVat())
                 .build();
-        History newHistory = historyRepository.save(history);
+        historyRepository.save(history);
 
         Balance balance = modelMapper.map(history, Balance.class);
-        balance.setStatus("PAYMENT");
-        Balance newBalance = balanceRepository.save(balance);
+        balance.setStatus(history.getType());
+        balanceRepository.save(balance);
 
         SentData data = modelMapper.map(submitRequest, SentData.class);
-        data.setType(newHistory.getType());
-        data.setId(newHistory.getId());
-        data.setEncryptedCard(newHistory.getCard());
+        data.setType(history.getType());
+        data.setId(history.getId());
+        data.setEncryptedCard(history.getCard());
 
         Sent sent = Sent.builder()
-                .id(newHistory.getId())
+                .id(history.getId())
                 .data(data.toString())
                 .build();
-        Sent newSent = sentRepository.save(sent);
+        sentRepository.save(sent);
 
-        return newSent;
+        return sent;
+    }
+
+    public Sent cancel(CancelRequest cancelRequest) throws Exception {
+        Balance balance = balanceRepository.findById(cancelRequest.getLongId()).orElse(null);
+        balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat());
+
+        History history = History.builder()
+                .type("CANCEL")
+                .card(balance.getCard())
+                .installment(0)
+                .amount(cancelRequest.getAmount())
+                .vat(cancelRequest.getVat())
+                .originId(balance.getId())
+                .build();
+        historyRepository.save(history);
+
+        Card card = new Card(encryption.decrypt(history.getCard()));
+        SentData data = modelMapper.map(history, SentData.class);
+        modelMapper.map(card, data);
+        data.setEncryptedCard(history.getCard());
+
+        Sent sent = Sent.builder()
+                .id(history.getId())
+                .data(data.toString())
+                .build();
+        sentRepository.save(sent);
+
+        return sent;
     }
 
     public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {
