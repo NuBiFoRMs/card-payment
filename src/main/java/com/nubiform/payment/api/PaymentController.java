@@ -1,7 +1,9 @@
 package com.nubiform.payment.api;
 
 import com.nubiform.payment.api.vo.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -10,9 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/payment")
 public class PaymentController {
+
+    private final PaymentService paymentService;
+
+    private final ModelMapper modelMapper;
 
     @InitBinder("submitRequest")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -20,13 +27,13 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) {
+    public ResponseEntity<Response> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
         log.debug("postPayment: {}", submitRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(new Response());
+        return ResponseEntity.ok(modelMapper.map(paymentService.submit(submitRequest), Response.class));
     }
 
     @DeleteMapping
