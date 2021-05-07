@@ -1,8 +1,11 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.SentRepository;
+import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +26,36 @@ class PaymentControllerCancelTest {
     MockMvc mockMvc;
 
     @Autowired
+    PaymentService paymentService;
+
+    @Autowired
+    BalanceRepository balanceRepository;
+
+    @Autowired
     SentRepository sentRepository;
 
     @Autowired
     ObjectMapper objectMapper;
 
+    SubmitRequest submitRequest;
     CancelRequest cancelRequest;
-    
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
+        submitRequest = new SubmitRequest();
+        submitRequest.setCard("1234567890123456");
+        submitRequest.setExpiration("1234");
+        submitRequest.setCvc("123");
+        submitRequest.setInstallment(0);
+        submitRequest.setAmount(10000L);
+
+        Long id = paymentService.submit(submitRequest).getId();
+
         cancelRequest = new CancelRequest();
-        cancelRequest.setId(1L);
+        cancelRequest.setId(id);
         cancelRequest.setAmount(1000L);
+
+        System.out.println(cancelRequest);
     }
 
     @Test

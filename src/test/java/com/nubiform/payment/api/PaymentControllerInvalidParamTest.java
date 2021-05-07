@@ -37,14 +37,14 @@ class PaymentControllerInvalidParamTest {
         submitRequest.setExpiration("1234");
         submitRequest.setCvc("123");
         submitRequest.setInstallment(0);
-        submitRequest.setAmount(1000L);
+        submitRequest.setAmount(10000L);
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId("12345678901234567890");
+        cancelRequest.setId(1L);
         cancelRequest.setAmount(1000L);
 
         paymentRequest = new PaymentRequest();
-        paymentRequest.setId("12345678901234567890");
+        paymentRequest.setId(1L);
     }
 
     @Test
