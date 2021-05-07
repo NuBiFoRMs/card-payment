@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.nubiform.payment.api.vo.Card;
+import com.nubiform.payment.api.vo.SentData;
 import com.nubiform.payment.api.vo.SubmitRequest;
 import com.nubiform.payment.domain.History;
 import com.nubiform.payment.domain.Sent;
@@ -38,7 +39,10 @@ public class PaymentService {
                 .build();
         History newHistory = historyRepository.save(history);
 
-        StringBuilder data = new StringBuilder();
+        SentData data = modelMapper.map(submitRequest, SentData.class);
+        data.setType(newHistory.getType());
+        data.setId(newHistory.getId());
+        data.setEncryptedCard(newHistory.getCard());
 
         Sent sent = Sent.builder()
                 .id(newHistory.getId())
