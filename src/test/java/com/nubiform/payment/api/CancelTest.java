@@ -12,23 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-class PaymentControllerCancelConcurrencyTest {
-
-    public static final int N_THREADS = 10;
+class CancelTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -61,28 +55,32 @@ class PaymentControllerCancelConcurrencyTest {
 
         cancelRequest = new CancelRequest();
         cancelRequest.setId(id);
-        cancelRequest.setAmount(1000L);
+        cancelRequest.setAmount(10000L);
     }
 
     @Test
     public void delPayment() throws Exception {
-        ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
-        CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
+        MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cancelRequest)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
 
-        for (int i = 0; i < N_THREADS; i++) {
-            executorService.execute(() -> {
-                try {
-                    MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(cancelRequest)))
-                            .andDo(print())
-                            .andReturn();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                countDownLatch.countDown();
-            });
-        }
-        countDownLatch.await();
+        String responseBody = mvcResult.getResponse().getContentAsString();
+
+        System.out.println(balanceRepository.findById(1L).orElse(null));
+    }
+
+    @Test
+    public void delPaymentFailure() throws Exception {
+        cancelRequest.setAmount(1000000L);
+
+        mockMvc.perform(delete("/api/v1/payment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cancelRequest)))
+                .andDo(print())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists());
     }
 }

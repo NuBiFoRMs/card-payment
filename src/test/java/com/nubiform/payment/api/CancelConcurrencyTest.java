@@ -1,7 +1,10 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.SentRepository;
+import com.nubiform.payment.service.PaymentService;
+import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,18 +20,24 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-class PaymentControllerSubmitConcurrencyTest {
+class CancelConcurrencyTest {
 
-    public static final int N_THREADS = 100;
+    public static final int N_THREADS = 10;
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    PaymentService paymentService;
+
+    @Autowired
+    BalanceRepository balanceRepository;
 
     @Autowired
     SentRepository sentRepository;
@@ -37,28 +46,35 @@ class PaymentControllerSubmitConcurrencyTest {
     ObjectMapper objectMapper;
 
     SubmitRequest submitRequest;
+    CancelRequest cancelRequest;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         submitRequest = new SubmitRequest();
         submitRequest.setCard("1234567890123456");
         submitRequest.setExpiration("1234");
         submitRequest.setCvc("123");
         submitRequest.setInstallment(0);
-        submitRequest.setAmount(1000L);
+        submitRequest.setAmount(10000L);
+
+        Long id = paymentService.submit(submitRequest).getId();
+
+        cancelRequest = new CancelRequest();
+        cancelRequest.setId(id);
+        cancelRequest.setAmount(1000L);
     }
 
     @Test
-    public void postPayment() throws Exception {
+    public void delPayment() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
 
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
-                    MvcResult mvcResult = mockMvc.perform(post("/api/v1/payment")
+                    MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(submitRequest)))
+                            .content(objectMapper.writeValueAsString(cancelRequest)))
                             .andDo(print())
                             .andReturn();
                 } catch (Exception e) {
