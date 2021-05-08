@@ -55,8 +55,6 @@ class PaymentControllerCancelTest {
         cancelRequest = new CancelRequest();
         cancelRequest.setId(id);
         cancelRequest.setAmount(10000L);
-
-        System.out.println(cancelRequest);
     }
 
     @Test

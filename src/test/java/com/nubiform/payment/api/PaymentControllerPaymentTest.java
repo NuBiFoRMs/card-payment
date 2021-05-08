@@ -49,8 +49,6 @@ class PaymentControllerPaymentTest {
 
         paymentRequest = new PaymentRequest();
         paymentRequest.setId(id);
-
-        System.out.println(paymentRequest);
     }
 
     @Test
