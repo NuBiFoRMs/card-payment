@@ -16,8 +16,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -39,9 +37,8 @@ public class PaymentService {
         CardLock cardLock = cardLockRepository.findById(encryptedCard)
                 .orElse(CardLock.builder()
                         .card(encryptedCard)
-                        .processDateTime(LocalDateTime.now())
                         .build());
-        cardLock.setProcessDateTime(LocalDateTime.now());
+        cardLock.generateLockId();
         cardLockRepository.save(cardLock);
 
         History history = History.builder()
