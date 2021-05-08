@@ -1,7 +1,10 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.domain.Balance;
+import com.nubiform.payment.domain.History;
 import com.nubiform.payment.repository.BalanceRepository;
+import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
@@ -21,14 +24,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 class CancelConcurrencyTest {
 
-    public static final int N_THREADS = 10;
+    public static final int N_THREADS = 1000;
 
     @Autowired
     MockMvc mockMvc;
@@ -38,6 +40,9 @@ class CancelConcurrencyTest {
 
     @Autowired
     BalanceRepository balanceRepository;
+
+    @Autowired
+    HistoryRepository historyRepository;
 
     @Autowired
     SentRepository sentRepository;
@@ -61,7 +66,7 @@ class CancelConcurrencyTest {
 
         cancelRequest = new CancelRequest();
         cancelRequest.setId(id);
-        cancelRequest.setAmount(1000L);
+        cancelRequest.setAmount(10000L);
     }
 
     @Test
@@ -75,8 +80,8 @@ class CancelConcurrencyTest {
                     MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cancelRequest)))
-                            .andDo(print())
                             .andReturn();
+                    System.out.println(mvcResult.getResponse().getContentAsString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -84,5 +89,20 @@ class CancelConcurrencyTest {
             });
         }
         countDownLatch.await();
+
+        balanceRepository.findById(cancelRequest.getLongId())
+                .stream()
+                .map(Balance::toString)
+                .forEach(System.out::println);
+
+        historyRepository.findById(cancelRequest.getLongId())
+                .stream()
+                .map(History::toString)
+                .forEach(System.out::println);
+
+        historyRepository.findByOriginId(cancelRequest.getLongId())
+                .stream()
+                .map(History::toString)
+                .forEach(System.out::println);
     }
 }

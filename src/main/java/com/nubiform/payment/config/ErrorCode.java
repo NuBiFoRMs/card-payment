@@ -9,6 +9,7 @@ public enum ErrorCode {
     NoDataFound(1001, "No data found"),
     NotEnoughAmountOrVat(1002, "Not enough amount or vat"),
     PaymentIsProcessing(1003, "Payment is processing"),
+    PaymentIsAlreadyCanceled(1004, "Payment is already canceled"),
     UnknownError(9999, "Unknown error");
 
     private int code;

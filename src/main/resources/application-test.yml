@@ -9,9 +9,9 @@ spring:
 
 logging:
   level:
-    com.nubiform: debug
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    com.nubiform: error
+    org.hibernate.SQL: error
+    org.hibernate.type.descriptor.sql.BasicBinder: error
 
 # swagger-ui custom path
 springdoc.swagger-ui.path: /swagger-ui.html

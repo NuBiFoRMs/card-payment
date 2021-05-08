@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -59,8 +58,8 @@ class SubmitConcurrencyTest {
                     MvcResult mvcResult = mockMvc.perform(post("/api/v1/payment")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(submitRequest)))
-                            .andDo(print())
                             .andReturn();
+                    System.out.println(mvcResult.getResponse().getContentAsString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

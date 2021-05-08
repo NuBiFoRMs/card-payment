@@ -77,6 +77,8 @@ public class PaymentService {
         Balance balance = balanceRepository.findById(cancelRequest.getLongId())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
+        if (balance.isCanceled()) throw new PaymentException(ErrorCode.PaymentIsAlreadyCanceled);
+
         if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
             throw new PaymentException(ErrorCode.NotEnoughAmountOrVat);
 
