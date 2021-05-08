@@ -60,7 +60,9 @@ public class PaymentService {
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
         Balance balance = balanceRepository.findById(cancelRequest.getLongId()).orElse(null);
-        balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat());
+        
+        if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
+            throw new IllegalArgumentException();
 
         History history = History.builder()
                 .type("CANCEL")

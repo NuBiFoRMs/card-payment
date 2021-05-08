@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class PaymentServiceTest {
+class PaymentServiceSubmitTest {
 
     public static final int N_THREADS = 50;
 
