@@ -5,9 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-    OperationNotSupported(9999, "Operation not supported"),
-    NoDataFound(1000, "No data found"),
-    NotEnoughAmountOrVat(1001, "Not enough amount or vat");
+    OperationNotSupported(1000, "Operation not supported"),
+    NoDataFound(1001, "No data found"),
+    NotEnoughAmountOrVat(1002, "Not enough amount or vat"),
+    PaymentIsProcessing(1003, "Payment is processing"),
+    UnknownError(9999, "Unknown error");
 
     private int code;
     private String description;
