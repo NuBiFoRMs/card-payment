@@ -66,7 +66,7 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ResponseEntity getPayment(@Valid @RequestBody PaymentRequest paymentRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity getPayment(@Valid PaymentRequest paymentRequest, BindingResult bindingResult) throws Exception {
         log.debug("getPayment: {}", paymentRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);

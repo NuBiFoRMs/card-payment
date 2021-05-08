@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,8 +53,7 @@ class PaymentControllerPaymentTest {
     @Test
     public void getPayment() throws Exception {
         mockMvc.perform(get("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(paymentRequest)))
+                .param("id", paymentRequest.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
