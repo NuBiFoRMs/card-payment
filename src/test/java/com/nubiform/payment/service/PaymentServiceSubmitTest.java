@@ -1,11 +1,7 @@
-package com.nubiform.payment.api;
+package com.nubiform.payment.service;
 
-import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.Sent;
-import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.SentRepository;
-import com.nubiform.payment.service.PaymentService;
-import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,47 +15,37 @@ import java.util.concurrent.Executors;
 
 @ActiveProfiles("test")
 @SpringBootTest
-class PaymentServiceCancelTest {
+class PaymentServiceSubmitTest {
 
-    public static final int N_THREADS = 10;
+    public static final int N_THREADS = 100;
 
     @Autowired
     PaymentService paymentService;
 
     @Autowired
-    BalanceRepository balanceRepository;
-
-    @Autowired
     SentRepository sentRepository;
 
     SubmitRequest submitRequest;
-    CancelRequest cancelRequest;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         submitRequest = new SubmitRequest();
         submitRequest.setCard("1234567890123456");
         submitRequest.setExpiration("1234");
         submitRequest.setCvc("123");
         submitRequest.setInstallment(0);
         submitRequest.setAmount(10000L);
-
-        Long id = paymentService.submit(submitRequest).getId();
-
-        cancelRequest = new CancelRequest();
-        cancelRequest.setId(id);
-        cancelRequest.setAmount(1000L);
     }
 
     @Test
-    public void cancelConcurrencyTest() throws Exception {
+    public void submitConcurrencyTest() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
 
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
-                    paymentService.cancel(cancelRequest);
+                    paymentService.submit(submitRequest);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -67,10 +53,6 @@ class PaymentServiceCancelTest {
             });
         }
         countDownLatch.await();
-
-        balanceRepository.findAll().stream()
-                .map(Balance::toString)
-                .forEach(System.out::println);
 
         sentRepository.findAll().stream()
                 .map(Sent::toString)

@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentService {
 
+    public static final String TYPE_PAYMENT = "PAYMENT";
+    public static final String TYPE_CANCEL = "CANCEL";
+
     private final BalanceRepository balanceRepository;
     private final CardLockRepository cardLockRepository;
     private final HistoryRepository historyRepository;
@@ -42,7 +45,7 @@ public class PaymentService {
         cardLockRepository.save(cardLock);
 
         History history = History.builder()
-                .type("PAYMENT")
+                .type(TYPE_PAYMENT)
                 .card(encryptedCard)
                 .installment(submitRequest.getInstallment())
                 .amount(submitRequest.getAmount())
@@ -75,7 +78,7 @@ public class PaymentService {
             throw new IllegalArgumentException();
 
         History history = History.builder()
-                .type("CANCEL")
+                .type(TYPE_CANCEL)
                 .card(balance.getCard())
                 .installment(0)
                 .amount(cancelRequest.getAmount())
