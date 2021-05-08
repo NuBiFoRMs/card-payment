@@ -41,6 +41,11 @@ public class SubmitRequest {
     @Range(min = 0, max = 1000000000)
     private Long vat;
 
+    public Integer getInstallment() {
+        if (this.installment == 1) this.installment = 0;
+        return this.installment;
+    }
+
     public Long getVat() {
         if (this.vat == null) this.vat = Math.round(this.amount / VAT_RATE);
         return vat;

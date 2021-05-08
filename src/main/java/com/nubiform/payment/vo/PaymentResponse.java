@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 public class PaymentResponse {
 
     public static final String PRE_FIX = "N";
+    public static final String MASK_REGEX = "(?<=.{6}).(?=.{3})";
+    public static final String MASK = "*";
 
     private Long id;
 
@@ -33,6 +35,11 @@ public class PaymentResponse {
     @JsonGetter("id")
     public String getId() {
         return PRE_FIX + StringUtils.leftPad(String.valueOf(id), 19, "0");
+    }
+
+    @JsonGetter("card")
+    public String getCard() {
+        return this.card.replaceAll(MASK_REGEX, MASK);
     }
 
     @JsonIgnore
