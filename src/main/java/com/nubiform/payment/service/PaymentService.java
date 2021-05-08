@@ -1,9 +1,11 @@
 package com.nubiform.payment.service;
 
 import com.nubiform.payment.domain.Balance;
+import com.nubiform.payment.domain.CardLock;
 import com.nubiform.payment.domain.History;
 import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.BalanceRepository;
+import com.nubiform.payment.repository.CardLockRepository;
 import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.security.Encryption;
@@ -20,20 +22,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentService {
 
-    private final HistoryRepository historyRepository;
+    public static final String TYPE_PAYMENT = "PAYMENT";
+    public static final String TYPE_CANCEL = "CANCEL";
+
     private final BalanceRepository balanceRepository;
+    private final CardLockRepository cardLockRepository;
+    private final HistoryRepository historyRepository;
     private final SentRepository sentRepository;
 
-    private final ModelMapper modelMapper;
     private final Encryption encryption;
+    private final ModelMapper modelMapper;
 
     public Sent submit(SubmitRequest submitRequest) throws Exception {
         Card card = modelMapper.map(submitRequest, Card.class);
-        encryption.encrypt(card.toData());
+        String encryptedCard = encryption.encrypt(card.toData());
+
+        CardLock cardLock = cardLockRepository.findById(encryptedCard)
+                .orElse(CardLock.builder()
+                        .card(encryptedCard)
+                        .build());
+        cardLock.generateLockId();
+        cardLockRepository.save(cardLock);
 
         History history = History.builder()
-                .type("PAYMENT")
-                .card(encryption.encrypt(card.toData()))
+                .type(TYPE_PAYMENT)
+                .card(encryptedCard)
                 .installment(submitRequest.getInstallment())
                 .amount(submitRequest.getAmount())
                 .vat(submitRequest.getVat())
@@ -60,10 +73,12 @@ public class PaymentService {
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
         Balance balance = balanceRepository.findById(cancelRequest.getLongId()).orElse(null);
-        balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat());
+
+        if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
+            throw new IllegalArgumentException();
 
         History history = History.builder()
-                .type("CANCEL")
+                .type(TYPE_CANCEL)
                 .card(balance.getCard())
                 .installment(0)
                 .amount(cancelRequest.getAmount())

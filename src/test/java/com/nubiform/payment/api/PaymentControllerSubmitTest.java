@@ -3,8 +3,6 @@ package com.nubiform.payment.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.SentRepository;
-import com.nubiform.payment.vo.CancelRequest;
-import com.nubiform.payment.vo.PaymentRequest;
 import com.nubiform.payment.vo.Response;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +34,6 @@ class PaymentControllerSubmitTest {
     ObjectMapper objectMapper;
 
     SubmitRequest submitRequest;
-    CancelRequest cancelRequest;
-    PaymentRequest paymentRequest;
 
     @BeforeEach
     void setUp() {
@@ -47,13 +43,6 @@ class PaymentControllerSubmitTest {
         submitRequest.setCvc("123");
         submitRequest.setInstallment(0);
         submitRequest.setAmount(1000L);
-
-        cancelRequest = new CancelRequest();
-        cancelRequest.setId("1234567890");
-        cancelRequest.setAmount(1000L);
-
-        paymentRequest = new PaymentRequest();
-        paymentRequest.setId("1234567890");
     }
 
     @Test

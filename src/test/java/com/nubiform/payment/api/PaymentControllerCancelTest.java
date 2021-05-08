@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,8 +56,6 @@ class PaymentControllerCancelTest {
         cancelRequest = new CancelRequest();
         cancelRequest.setId(id);
         cancelRequest.setAmount(10000L);
-
-        System.out.println(cancelRequest);
     }
 
     @Test
@@ -71,5 +70,16 @@ class PaymentControllerCancelTest {
         String responseBody = mvcResult.getResponse().getContentAsString();
 
         System.out.println(balanceRepository.findById(1L).orElse(null));
+    }
+
+    @Test
+    public void delPaymentFailure() throws Exception {
+        cancelRequest.setAmount(1000000L);
+
+        assertThrows(Exception.class, () -> {
+            mockMvc.perform(delete("/api/v1/payment")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(cancelRequest)));
+        });
     }
 }
