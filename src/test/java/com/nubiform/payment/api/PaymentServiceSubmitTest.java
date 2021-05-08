@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 @SpringBootTest
 class PaymentServiceSubmitTest {
 
-    public static final int N_THREADS = 50;
+    public static final int N_THREADS = 100;
 
     @Autowired
     PaymentService paymentService;
