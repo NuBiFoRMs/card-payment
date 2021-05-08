@@ -1,5 +1,7 @@
 package com.nubiform.payment.service;
 
+import com.nubiform.payment.config.ErrorCode;
+import com.nubiform.payment.config.PaymentException;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.CardLock;
 import com.nubiform.payment.domain.History;
@@ -72,10 +74,11 @@ public class PaymentService {
     }
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
-        Balance balance = balanceRepository.findById(cancelRequest.getLongId()).orElse(null);
+        Balance balance = balanceRepository.findById(cancelRequest.getLongId())
+                .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
-            throw new IllegalArgumentException();
+            throw new PaymentException(ErrorCode.NotEnoughAmountOrVat);
 
         History history = History.builder()
                 .type(TYPE_CANCEL)
@@ -102,7 +105,8 @@ public class PaymentService {
     }
 
     public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {
-        History history = historyRepository.findById(paymentRequest.getLongId()).orElse(null);
+        History history = historyRepository.findById(paymentRequest.getLongId())
+                .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
         PaymentResponse paymentResponse = modelMapper.map(history, PaymentResponse.class);
         Card card = new Card(encryption.decrypt(history.getCard()));
         modelMapper.map(card, paymentResponse);
