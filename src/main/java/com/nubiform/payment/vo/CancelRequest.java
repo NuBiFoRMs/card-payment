@@ -44,9 +44,4 @@ public class CancelRequest {
     public Long getLongId() {
         return Long.valueOf(id.replace(PRE_FIX, ""));
     }
-
-    public Long getVat() {
-        if (this.vat == null) this.vat = Math.round(this.amount / VAT_RATE);
-        return vat;
-    }
 }

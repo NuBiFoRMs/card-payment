@@ -79,6 +79,14 @@ public class PaymentService {
 
         if (balance.isCanceled()) throw new PaymentException(ErrorCode.PaymentIsAlreadyCanceled);
 
+        if (cancelRequest.getVat() == null) {
+            long vat = Math.round(cancelRequest.getAmount() / 11D);
+            if (balance.getAmount() - cancelRequest.getAmount() == 0 && balance.getVat() < vat)
+                cancelRequest.setVat(balance.getVat());
+            else
+                cancelRequest.setVat(vat);
+        }
+
         if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
             throw new PaymentException(ErrorCode.NotEnoughAmountOrVat);
 
