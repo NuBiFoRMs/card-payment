@@ -162,8 +162,7 @@ class PaymentControllerInvalidParamTest {
         paymentRequest.setId("1234567890");
 
         mockMvc.perform(get("/api/v1/payment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(paymentRequest)))
+                .param("id", paymentRequest.getId()))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }
