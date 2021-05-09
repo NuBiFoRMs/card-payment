@@ -57,27 +57,11 @@ public class PaymentService {
         // mapping
         history.setBalance(balance);
 
-        SentData data = modelMapper.map(submitRequest, SentData.class);
-        data.setType(history.getType());
-        data.setId(history.getId());
+        SentData data = modelMapper.map(history, SentData.class);
+        modelMapper.map(card, data);
         data.setEncryptedCard(history.getCard());
 
-        Sent sent = Sent.builder()
-                .id(history.getId())
-                .data(data.toString())
-                .build();
-        sentRepository.save(sent);
-
-        return sent;
-    }
-
-    private void getLock(String encryptedCard) {
-        CardLock cardLock = cardLockRepository.findById(encryptedCard)
-                .orElse(CardLock.builder()
-                        .card(encryptedCard)
-                        .build());
-        cardLock.generateLockId();
-        cardLockRepository.save(cardLock);
+        return sendPaymentData(data);
     }
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
@@ -113,13 +97,7 @@ public class PaymentService {
         data.setEncryptedCard(history.getCard());
         data.setOriginId(history.getBalance().getId());
 
-        Sent sent = Sent.builder()
-                .id(history.getId())
-                .data(data.toString())
-                .build();
-        sentRepository.save(sent);
-
-        return sent;
+        return sendPaymentData(data);
     }
 
     public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {
@@ -129,5 +107,23 @@ public class PaymentService {
         Card card = new Card(encryption.decrypt(history.getCard()));
         modelMapper.map(card, paymentResponse);
         return paymentResponse;
+    }
+
+    private Sent sendPaymentData(SentData data) {
+        Sent sent = Sent.builder()
+                .id(data.getId())
+                .data(data.toString())
+                .build();
+        sentRepository.save(sent);
+        return sent;
+    }
+
+    private void getLock(String encryptedCard) {
+        CardLock cardLock = cardLockRepository.findById(encryptedCard)
+                .orElse(CardLock.builder()
+                        .card(encryptedCard)
+                        .build());
+        cardLock.generateLockId();
+        cardLockRepository.save(cardLock);
     }
 }
