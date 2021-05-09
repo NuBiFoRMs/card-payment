@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,5 +30,6 @@ public class History {
 
     private Long vat;
 
-    private Long originId;
+    @ManyToOne
+    private Balance balance;
 }

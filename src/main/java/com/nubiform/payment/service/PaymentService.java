@@ -59,6 +59,9 @@ public class PaymentService {
         balance.setStatus(history.getType());
         balanceRepository.save(balance);
 
+        // mapping
+        history.setBalance(balance);
+
         SentData data = modelMapper.map(submitRequest, SentData.class);
         data.setType(history.getType());
         data.setId(history.getId());
@@ -96,7 +99,7 @@ public class PaymentService {
                 .installment(0)
                 .amount(cancelRequest.getAmount())
                 .vat(cancelRequest.getVat())
-                .originId(balance.getId())
+                .balance(balance)
                 .build();
         historyRepository.save(history);
 
@@ -104,6 +107,7 @@ public class PaymentService {
         SentData data = modelMapper.map(history, SentData.class);
         modelMapper.map(card, data);
         data.setEncryptedCard(history.getCard());
+        data.setOriginId(history.getBalance().getId());
 
         Sent sent = Sent.builder()
                 .id(history.getId())
