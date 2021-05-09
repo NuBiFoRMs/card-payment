@@ -1,5 +1,6 @@
 package com.nubiform.payment.domain;
 
+import com.nubiform.payment.config.PaymentType;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class Balance {
         if ((this.amount - amount) < (this.vat - vat)) return false;
         this.amount -= amount;
         this.vat -= vat;
-        if (this.amount == 0 && this.vat == 0) this.status = "CANCEL";
+        if (this.amount == 0 && this.vat == 0) this.status = PaymentType.CANCEL;
         return true;
     }
 
