@@ -2,6 +2,7 @@ package com.nubiform.payment.service;
 
 import com.nubiform.payment.config.ErrorCode;
 import com.nubiform.payment.config.PaymentException;
+import com.nubiform.payment.config.PaymentType;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.CardLock;
 import com.nubiform.payment.domain.History;
@@ -24,9 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentService {
 
-    public static final String TYPE_PAYMENT = "PAYMENT";
-    public static final String TYPE_CANCEL = "CANCEL";
-
     private final BalanceRepository balanceRepository;
     private final CardLockRepository cardLockRepository;
     private final HistoryRepository historyRepository;
@@ -42,7 +40,7 @@ public class PaymentService {
         getLock(encryptedCard);
 
         History history = History.builder()
-                .type(TYPE_PAYMENT)
+                .type(PaymentType.PAYMENT)
                 .card(encryptedCard)
                 .installment(submitRequest.getInstallment())
                 .amount(submitRequest.getAmount())
@@ -82,7 +80,7 @@ public class PaymentService {
             throw new PaymentException(ErrorCode.NotEnoughAmountOrVat);
 
         History history = History.builder()
-                .type(TYPE_CANCEL)
+                .type(PaymentType.CANCEL)
                 .card(balance.getCard())
                 .installment(0)
                 .amount(cancelRequest.getAmount())
