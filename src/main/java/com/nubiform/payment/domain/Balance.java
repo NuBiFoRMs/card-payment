@@ -43,7 +43,7 @@ public class Balance {
     }
 
     public boolean isCanceled() {
-        if ("CANCEL".equals(this.status)) return true;
+        if (PaymentType.CANCEL.equals(this.status)) return true;
         return false;
     }
 }
