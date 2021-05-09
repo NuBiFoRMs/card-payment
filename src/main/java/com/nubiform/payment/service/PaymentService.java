@@ -39,12 +39,7 @@ public class PaymentService {
         Card card = modelMapper.map(submitRequest, Card.class);
         String encryptedCard = encryption.encrypt(card.toData());
 
-        CardLock cardLock = cardLockRepository.findById(encryptedCard)
-                .orElse(CardLock.builder()
-                        .card(encryptedCard)
-                        .build());
-        cardLock.generateLockId();
-        cardLockRepository.save(cardLock);
+        getLock(encryptedCard);
 
         History history = History.builder()
                 .type(TYPE_PAYMENT)
@@ -74,6 +69,15 @@ public class PaymentService {
         sentRepository.save(sent);
 
         return sent;
+    }
+
+    private void getLock(String encryptedCard) {
+        CardLock cardLock = cardLockRepository.findById(encryptedCard)
+                .orElse(CardLock.builder()
+                        .card(encryptedCard)
+                        .build());
+        cardLock.generateLockId();
+        cardLockRepository.save(cardLock);
     }
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
