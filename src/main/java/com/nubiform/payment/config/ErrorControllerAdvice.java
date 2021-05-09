@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,12 +33,20 @@ public class ErrorControllerAdvice {
         return paymentException(request, response, new PaymentException(ErrorCode.PaymentIsProcessing));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity httpMessageNotReadableException(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+        log.error("message: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
+    }
+
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity noHandlerFoundExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
         log.error("message: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.of(ErrorCode.OperationNotSupported));
+                .body(ErrorResponse.of(HttpStatus.NOT_FOUND));
     }
 
     @ExceptionHandler(Exception.class)
@@ -46,6 +55,6 @@ public class ErrorControllerAdvice {
         log.error("exceptionMessage: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.of(ErrorCode.UnknownError));
+                .body(ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
