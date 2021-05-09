@@ -1,15 +1,12 @@
 package com.nubiform.payment.controller;
 
 import com.nubiform.payment.service.PaymentService;
-import com.nubiform.payment.validator.CancelValidator;
-import com.nubiform.payment.validator.PaymentValidator;
-import com.nubiform.payment.vo.CancelRequest;
-import com.nubiform.payment.vo.PaymentRequest;
-import com.nubiform.payment.vo.Response;
-import com.nubiform.payment.vo.SubmitRequest;
+import com.nubiform.payment.validator.SubmitValidator;
+import com.nubiform.payment.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -23,8 +20,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/payment")
 public class PaymentController {
 
-    private final PaymentValidator paymentValidator;
-    private final CancelValidator cancelValidator;
+    private final SubmitValidator submitValidator;
 
     private final PaymentService paymentService;
 
@@ -32,25 +28,17 @@ public class PaymentController {
 
     @InitBinder("submitRequest")
     public void submitInitBinder(WebDataBinder webDataBinder) {
-
-    }
-
-    @InitBinder("paymentRequest")
-    public void paymentInitBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(paymentValidator);
-    }
-
-    @InitBinder("cancelRequest")
-    public void cancelInitBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(cancelValidator);
+        webDataBinder.addValidators(submitValidator);
     }
 
     @PostMapping
-    public ResponseEntity<Response> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
         log.debug("postPayment: {}", submitRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
         }
         return ResponseEntity.ok(modelMapper.map(paymentService.submit(submitRequest), Response.class));
     }
@@ -60,7 +48,9 @@ public class PaymentController {
         log.debug("delPayment: {}", cancelRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
         }
         return ResponseEntity.ok(modelMapper.map(paymentService.cancel(cancelRequest), Response.class));
     }
@@ -70,7 +60,9 @@ public class PaymentController {
         log.debug("getPayment: {}", paymentRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
         }
         return ResponseEntity.ok(paymentService.payment(paymentRequest));
     }

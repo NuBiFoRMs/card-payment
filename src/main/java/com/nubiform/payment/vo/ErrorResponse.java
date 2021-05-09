@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +22,10 @@ public class ErrorResponse {
         this.message = errorCode.getDescription();
     }
 
-    public static ErrorResponse of(ErrorCode errorCode) {
-        return new ErrorResponse(errorCode);
+    public static ErrorResponse of(HttpStatus httpStatus) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setCode(httpStatus.value());
+        errorResponse.setMessage(httpStatus.getReasonPhrase());
+        return errorResponse;
     }
 }

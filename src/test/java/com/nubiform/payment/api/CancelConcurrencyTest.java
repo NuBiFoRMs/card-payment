@@ -99,10 +99,5 @@ class CancelConcurrencyTest {
                 .stream()
                 .map(History::toString)
                 .forEach(System.out::println);
-
-        historyRepository.findByOriginId(cancelRequest.getLongId())
-                .stream()
-                .map(History::toString)
-                .forEach(System.out::println);
     }
 }
