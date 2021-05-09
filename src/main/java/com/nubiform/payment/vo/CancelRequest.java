@@ -1,13 +1,20 @@
 package com.nubiform.payment.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 public class CancelRequest {
 
@@ -24,6 +31,7 @@ public class CancelRequest {
     @Range(min = 0, max = 1000000000)
     private Long vat;
 
+    @JsonSetter("id")
     public void setId(String id) {
         this.id = id;
     }
@@ -35,10 +43,5 @@ public class CancelRequest {
     @JsonIgnore
     public Long getLongId() {
         return Long.valueOf(id.replace(PRE_FIX, ""));
-    }
-
-    public Long getVat() {
-        if (this.vat == null) this.vat = Math.round(this.amount / VAT_RATE);
-        return vat;
     }
 }

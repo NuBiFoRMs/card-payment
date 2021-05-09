@@ -1,12 +1,18 @@
 package com.nubiform.payment.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 public class SubmitRequest {
 
@@ -34,6 +40,11 @@ public class SubmitRequest {
 
     @Range(min = 0, max = 1000000000)
     private Long vat;
+
+    public Integer getInstallment() {
+        if (this.installment == 1) this.installment = 0;
+        return this.installment;
+    }
 
     public Long getVat() {
         if (this.vat == null) this.vat = Math.round(this.amount / VAT_RATE);

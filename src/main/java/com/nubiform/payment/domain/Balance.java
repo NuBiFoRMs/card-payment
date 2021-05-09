@@ -34,9 +34,15 @@ public class Balance {
     public boolean cancel(Long amount, Long vat) {
         if (this.amount - amount < 0) return false;
         if (this.vat - vat < 0) return false;
+        if ((this.amount - amount) < (this.vat - vat)) return false;
         this.amount -= amount;
         this.vat -= vat;
         if (this.amount == 0 && this.vat == 0) this.status = "CANCEL";
         return true;
+    }
+
+    public boolean isCanceled() {
+        if ("CANCEL".equals(this.status)) return true;
+        return false;
     }
 }
