@@ -29,16 +29,20 @@ public class Balance extends BaseTimeEntity {
 
     private Long vat;
 
+    private Long remainAmount;
+
+    private Long remainVat;
+
     @Version
     private Long version;
 
     public boolean cancel(Long amount, Long vat) {
-        if (this.amount - amount < 0) return false;
-        if (this.vat - vat < 0) return false;
-        if ((this.amount - amount) < (this.vat - vat)) return false;
-        this.amount -= amount;
-        this.vat -= vat;
-        if (this.amount == 0 && this.vat == 0) this.status = PaymentType.CANCEL;
+        if (this.remainAmount - amount < 0) return false;
+        if (this.remainVat - vat < 0) return false;
+        if ((this.remainAmount - amount) < (this.vat - vat)) return false;
+        this.remainAmount -= amount;
+        this.remainVat -= vat;
+        if (this.remainAmount == 0 && this.vat == 0) this.status = PaymentType.CANCEL;
         return true;
     }
 

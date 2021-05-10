@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +37,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 class CancelConcurrencyTest {
 
     public static final int N_THREADS = 1000;
@@ -47,6 +48,9 @@ class CancelConcurrencyTest {
 
     @Autowired
     PaymentService paymentService;
+
+    @PersistenceContext
+    EntityManager em;
 
     @Autowired
     BalanceRepository balanceRepository;
@@ -130,7 +134,8 @@ class CancelConcurrencyTest {
         assertion(cancelRequest.getLongId());
     }
 
-    private void assertion(Long id) {
+    @Transactional
+    public void assertion(Long id) {
         History history = historyRepository.findById(id).orElse(null);
         assertNotNull(history);
 
@@ -152,7 +157,7 @@ class CancelConcurrencyTest {
                 .map(History::toString)
                 .forEach(System.out::println);
 
-        assertEquals(balance.getAmount(), history.getAmount() - amountSum);
-        assertEquals(balance.getVat(), history.getVat() - vatSum);
+        assertEquals(balance.getRemainAmount(), history.getAmount() - amountSum);
+        assertEquals(balance.getRemainVat(), history.getVat() - vatSum);
     }
 }

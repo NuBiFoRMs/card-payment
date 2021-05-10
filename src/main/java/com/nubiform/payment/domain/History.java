@@ -27,6 +27,7 @@ public class History extends BaseTimeEntity {
 
     private Long vat;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Balance balance;
 }

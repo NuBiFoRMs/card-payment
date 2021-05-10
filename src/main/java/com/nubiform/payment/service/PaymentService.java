@@ -56,6 +56,8 @@ public class PaymentService {
 
         Balance balance = modelMapper.map(history, Balance.class);
         balance.setStatus(history.getType());
+        balance.setRemainAmount(history.getAmount());
+        balance.setRemainVat(history.getVat());
         balanceRepository.save(balance);
 
         // mapping history - balance
@@ -77,8 +79,8 @@ public class PaymentService {
 
         if (cancelRequest.getVat() == null) {
             long vat = calculateVat(cancelRequest.getAmount());
-            if (balance.getAmount() - cancelRequest.getAmount() == 0 && balance.getVat() < vat)
-                cancelRequest.setVat(balance.getVat());
+            if (balance.getRemainAmount() - cancelRequest.getAmount() == 0 && balance.getRemainVat() < vat)
+                cancelRequest.setVat(balance.getRemainVat());
             else
                 cancelRequest.setVat(vat);
         } else if (cancelRequest.getVat() > cancelRequest.getAmount())
