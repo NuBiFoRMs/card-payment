@@ -2,10 +2,7 @@ package com.nubiform.payment.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +27,6 @@ public class History {
 
     private Long vat;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Balance balance;
 }

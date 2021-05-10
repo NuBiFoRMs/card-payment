@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface HistoryRepository extends JpaRepository<History, Long> {
-    //    List<History> findByOriginId(Long originId);
+
+    List<History> findByBalance(Balance balance);
+
     List<History> findByBalanceAndType(Balance balance, String type);
 }

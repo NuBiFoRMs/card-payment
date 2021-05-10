@@ -105,9 +105,20 @@ class CancelConcurrencyTest {
         Balance balance = balanceRepository.findById(id).orElse(null);
         assertNotNull(balance);
 
-        List<History> historyListByBalance = historyRepository.findByBalanceAndType(balance, PaymentType.CANCEL);
-        long amountSum = historyListByBalance.stream().mapToLong(History::getAmount).sum();
-        long vatSum = historyListByBalance.stream().mapToLong(History::getVat).sum();
+        List<History> historyListByBalance = historyRepository.findByBalance(balance);
+        
+        long amountSum = historyListByBalance.stream()
+                .filter(a -> a.getType().equals(PaymentType.CANCEL))
+                .mapToLong(History::getAmount)
+                .sum();
+        long vatSum = historyListByBalance.stream()
+                .filter(a -> a.getType().equals(PaymentType.CANCEL))
+                .mapToLong(History::getVat)
+                .sum();
+
+        historyListByBalance.stream()
+                .map(History::toString)
+                .forEach(System.out::println);
 
         assertEquals(balance.getAmount(), history.getAmount() - amountSum);
         assertEquals(balance.getVat(), history.getVat() - vatSum);
