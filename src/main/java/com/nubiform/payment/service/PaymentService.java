@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentService {
 
+    public static final double VAT_RATE = 11D;
+
     private final BalanceRepository balanceRepository;
     private final CardLockRepository cardLockRepository;
     private final HistoryRepository historyRepository;
@@ -34,6 +36,10 @@ public class PaymentService {
     private final ModelMapper modelMapper;
 
     public Sent submit(SubmitRequest submitRequest) throws Exception {
+        if (submitRequest.getVat() == null) submitRequest.setVat(calculateVat(submitRequest.getAmount()));
+        else if (submitRequest.getVat() > submitRequest.getAmount())
+            throw new PaymentException(ErrorCode.VatIsNotGreaterThanAmount);
+
         Card card = modelMapper.map(submitRequest, Card.class);
         String encryptedCard = encryption.encrypt(card.toData());
 
@@ -50,6 +56,8 @@ public class PaymentService {
 
         Balance balance = modelMapper.map(history, Balance.class);
         balance.setStatus(history.getType());
+        balance.setRemainAmount(history.getAmount());
+        balance.setRemainVat(history.getVat());
         balanceRepository.save(balance);
 
         // mapping history - balance
@@ -70,12 +78,13 @@ public class PaymentService {
         if (balance.isCanceled()) throw new PaymentException(ErrorCode.PaymentIsAlreadyCanceled);
 
         if (cancelRequest.getVat() == null) {
-            long vat = Math.round(cancelRequest.getAmount() / 11D);
-            if (balance.getAmount() - cancelRequest.getAmount() == 0 && balance.getVat() < vat)
-                cancelRequest.setVat(balance.getVat());
+            long vat = calculateVat(cancelRequest.getAmount());
+            if (balance.getRemainAmount() - cancelRequest.getAmount() == 0 && balance.getRemainVat() < vat)
+                cancelRequest.setVat(balance.getRemainVat());
             else
                 cancelRequest.setVat(vat);
-        }
+        } else if (cancelRequest.getVat() > cancelRequest.getAmount())
+            throw new PaymentException(ErrorCode.VatIsNotGreaterThanAmount);
 
         if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
             throw new PaymentException(ErrorCode.NotEnoughAmountOrVat);
@@ -99,12 +108,25 @@ public class PaymentService {
         return sendPaymentData(data);
     }
 
+    private long calculateVat(long amount) {
+        return Math.round(amount / VAT_RATE);
+    }
+
     public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {
         History history = historyRepository.findById(paymentRequest.getLongId())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
+
         PaymentResponse paymentResponse = modelMapper.map(history, PaymentResponse.class);
         Card card = new Card(encryption.decrypt(history.getCard()));
         modelMapper.map(card, paymentResponse);
+
+        Balance balance = history.getBalance();
+        paymentResponse.setOriginId(balance.getId());
+        paymentResponse.setTotalAmount(balance.getAmount());
+        paymentResponse.setTotalVat(balance.getVat());
+        paymentResponse.setRemainAmount(balance.getRemainAmount());
+        paymentResponse.setRemainVat(balance.getRemainVat());
+
         return paymentResponse;
     }
 

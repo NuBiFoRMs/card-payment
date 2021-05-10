@@ -60,8 +60,19 @@ class InvalidParamTest {
     }
 
     @Test
-    public void postPaymentWrongExpiration() throws Exception {
+    public void postPaymentWrongExpirationLength() throws Exception {
         submitRequest.setExpiration("123");
+
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(submitRequest)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void postPaymentWrongExpirationYYMM() throws Exception {
+        submitRequest.setExpiration("9999");
 
         mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)

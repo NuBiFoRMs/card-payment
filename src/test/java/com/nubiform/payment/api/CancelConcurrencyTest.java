@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 class CancelConcurrencyTest {
 
     public static final int N_THREADS = 1000;
@@ -130,7 +129,8 @@ class CancelConcurrencyTest {
         assertion(cancelRequest.getLongId());
     }
 
-    private void assertion(Long id) {
+    @Transactional
+    public void assertion(Long id) {
         History history = historyRepository.findById(id).orElse(null);
         assertNotNull(history);
 
@@ -152,7 +152,7 @@ class CancelConcurrencyTest {
                 .map(History::toString)
                 .forEach(System.out::println);
 
-        assertEquals(balance.getAmount(), history.getAmount() - amountSum);
-        assertEquals(balance.getVat(), history.getVat() - vatSum);
+        assertEquals(balance.getRemainAmount(), history.getAmount() - amountSum);
+        assertEquals(balance.getRemainVat(), history.getVat() - vatSum);
     }
 }
