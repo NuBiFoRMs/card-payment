@@ -12,6 +12,7 @@ import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -77,6 +78,7 @@ class CancelConcurrencyTest {
         cancelRequest.setId(id);
     }
 
+    @DisplayName("전체취소 : 결제 한 건에 대한 전체취소를 동시에 할 수 없습니다.")
     @Test
     public void delPaymentAllCancellation() throws Exception {
         cancelRequest.setAmount(TOTAL_AMOUNT);
@@ -102,6 +104,7 @@ class CancelConcurrencyTest {
         assertion(cancelRequest.getLongId());
     }
 
+    @DisplayName("부분취소 : 결제 한 건에 대한 부분취소를 동시에 할 수 없습니다.")
     @Test
     public void delPaymentPartialCancellation() throws Exception {
         cancelRequest.setAmount(PARTIAL_AMOUNT);

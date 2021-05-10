@@ -7,6 +7,7 @@ import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Transactional
 class SubmitConcurrencyTest {
 
-    public static final int N_THREADS = 100;
+    public static final int N_THREADS = 1000;
 
     @Autowired
     MockMvc mockMvc;
@@ -63,6 +64,7 @@ class SubmitConcurrencyTest {
         submitRequest.setAmount(1000L);
     }
 
+    @DisplayName("결제 : 하나의 카드번호로 동시에 결제를 할 수 없습니다.")
     @Test
     public void postPayment() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
