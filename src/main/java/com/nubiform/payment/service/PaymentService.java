@@ -52,7 +52,7 @@ public class PaymentService {
         balance.setStatus(history.getType());
         balanceRepository.save(balance);
 
-        // mapping
+        // mapping history - balance
         history.setBalance(balance);
         historyRepository.save(history);
 
