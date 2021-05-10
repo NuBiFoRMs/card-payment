@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.PaymentRequest;
 import com.nubiform.payment.vo.SubmitRequest;
@@ -51,7 +52,7 @@ class InvalidParamTest {
     public void postPaymentWrongCard() throws Exception {
         submitRequest.setCard("12345678");
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -62,7 +63,7 @@ class InvalidParamTest {
     public void postPaymentWrongExpiration() throws Exception {
         submitRequest.setExpiration("123");
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -73,7 +74,7 @@ class InvalidParamTest {
     public void postPaymentWrongCvc() throws Exception {
         submitRequest.setCvc("12");
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -84,7 +85,7 @@ class InvalidParamTest {
     public void postPaymentWrongInstallment() throws Exception {
         submitRequest.setInstallment(13);
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -95,7 +96,7 @@ class InvalidParamTest {
     public void postPaymentWrongAmountMin() throws Exception {
         submitRequest.setAmount(99L);
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -106,7 +107,7 @@ class InvalidParamTest {
     public void postPaymentWrongAmountMax() throws Exception {
         submitRequest.setAmount(1000000001L);
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -117,7 +118,7 @@ class InvalidParamTest {
     public void postPaymentWrongVat() throws Exception {
         submitRequest.setVat(-1L);
 
-        mockMvc.perform(post("/api/v1/payment")
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
@@ -128,7 +129,7 @@ class InvalidParamTest {
     public void delPaymentWrongId() throws Exception {
         cancelRequest.setId("1234567890");
 
-        mockMvc.perform(delete("/api/v1/payment")
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
@@ -139,7 +140,7 @@ class InvalidParamTest {
     public void delPaymentWrongAmount() throws Exception {
         cancelRequest.setAmount(1000000001L);
 
-        mockMvc.perform(delete("/api/v1/payment")
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
@@ -150,7 +151,7 @@ class InvalidParamTest {
     public void delPaymentWrongVat() throws Exception {
         cancelRequest.setVat(-1L);
 
-        mockMvc.perform(delete("/api/v1/payment")
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
@@ -161,7 +162,7 @@ class InvalidParamTest {
     public void getPaymentWrongId() throws Exception {
         paymentRequest.setId("1234567890");
 
-        mockMvc.perform(get("/api/v1/payment")
+        mockMvc.perform(get(PaymentController.API_V1_PAYMENT_URI)
                 .param("id", paymentRequest.getId()))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());

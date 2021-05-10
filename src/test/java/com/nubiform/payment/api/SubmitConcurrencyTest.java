@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +56,7 @@ class SubmitConcurrencyTest {
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
-                    MvcResult mvcResult = mockMvc.perform(post("/api/v1/payment")
+                    MvcResult mvcResult = mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(submitRequest)))
                             .andReturn();

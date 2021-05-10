@@ -1,6 +1,8 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.config.PaymentType;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.History;
 import com.nubiform.payment.repository.BalanceRepository;
@@ -19,10 +21,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @ActiveProfiles("test")
@@ -31,6 +36,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class CancelConcurrencyTest {
 
     public static final int N_THREADS = 1000;
+    public static final long TOTAL_AMOUNT = 10000L;
+    public static final long PARTIAL_AMOUNT = 1000L;
 
     @Autowired
     MockMvc mockMvc;
@@ -60,24 +67,25 @@ class CancelConcurrencyTest {
         submitRequest.setExpiration("1234");
         submitRequest.setCvc("123");
         submitRequest.setInstallment(0);
-        submitRequest.setAmount(10000L);
+        submitRequest.setAmount(TOTAL_AMOUNT);
 
         Long id = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
         cancelRequest.setId(id);
-        cancelRequest.setAmount(10000L);
     }
 
     @Test
-    public void delPayment() throws Exception {
+    public void delPaymentAllCancellation() throws Exception {
+        cancelRequest.setAmount(TOTAL_AMOUNT);
+
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
 
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
-                    MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
+                    MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cancelRequest)))
                             .andReturn();
@@ -90,14 +98,58 @@ class CancelConcurrencyTest {
         }
         countDownLatch.await();
 
-        balanceRepository.findById(cancelRequest.getLongId())
-                .stream()
-                .map(Balance::toString)
-                .forEach(System.out::println);
+        validation(cancelRequest.getLongId());
+    }
 
-        historyRepository.findById(cancelRequest.getLongId())
-                .stream()
+    @Test
+    public void delPaymentPartialCancellation() throws Exception {
+        cancelRequest.setAmount(PARTIAL_AMOUNT);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
+        CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
+
+        for (int i = 0; i < N_THREADS; i++) {
+            executorService.execute(() -> {
+                try {
+                    MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(cancelRequest)))
+                            .andReturn();
+                    System.out.println(mvcResult.getResponse().getContentAsString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
+
+        validation(cancelRequest.getLongId());
+    }
+
+    private void validation(Long id) {
+        History history = historyRepository.findById(id).orElse(null);
+        assertNotNull(history);
+
+        Balance balance = balanceRepository.findById(id).orElse(null);
+        assertNotNull(balance);
+
+        List<History> historyListByBalance = historyRepository.findByBalance(balance);
+
+        long amountSum = historyListByBalance.stream()
+                .filter(a -> a.getType().equals(PaymentType.CANCEL))
+                .mapToLong(History::getAmount)
+                .sum();
+        long vatSum = historyListByBalance.stream()
+                .filter(a -> a.getType().equals(PaymentType.CANCEL))
+                .mapToLong(History::getVat)
+                .sum();
+
+        historyListByBalance.stream()
                 .map(History::toString)
                 .forEach(System.out::println);
+
+        assertEquals(balance.getAmount(), history.getAmount() - amountSum);
+        assertEquals(balance.getVat(), history.getVat() - vatSum);
     }
 }

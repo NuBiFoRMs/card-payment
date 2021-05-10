@@ -54,6 +54,7 @@ public class PaymentService {
 
         // mapping
         history.setBalance(balance);
+        historyRepository.save(history);
 
         SentData data = modelMapper.map(history, SentData.class);
         modelMapper.map(card, data);

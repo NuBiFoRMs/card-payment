@@ -17,9 +17,11 @@ import javax.validation.Valid;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/payment")
+@RequestMapping(PaymentController.API_V1_PAYMENT_URI)
 public class PaymentController {
 
+    public static final String API_V1_PAYMENT_URI = "/api/v1/payment";
+    
     private final SubmitValidator submitValidator;
 
     private final PaymentService paymentService;

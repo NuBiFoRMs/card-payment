@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.PaymentRequest;
@@ -52,7 +53,7 @@ class PaymentTest {
 
     @Test
     public void getPayment() throws Exception {
-        mockMvc.perform(get("/api/v1/payment")
+        mockMvc.perform(get(PaymentController.API_V1_PAYMENT_URI)
                 .param("id", paymentRequest.getId()))
                 .andDo(print())
                 .andExpect(status().isOk());
