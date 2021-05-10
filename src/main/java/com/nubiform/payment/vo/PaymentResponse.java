@@ -2,7 +2,6 @@ package com.nubiform.payment.vo;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,11 +25,6 @@ public class PaymentResponse {
     private Long amount;
 
     private Long vat;
-
-    @JsonSetter("id")
-    public void setId(String id) {
-        this.id = Long.valueOf(id.replace(PRE_FIX, ""));
-    }
 
     @JsonGetter("id")
     public String getId() {
