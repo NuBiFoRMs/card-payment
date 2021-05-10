@@ -26,9 +26,24 @@ public class PaymentResponse {
 
     private Long vat;
 
+    private Long originId;
+
+    private Long totalAmount;
+
+    private Long totalVat;
+
+    private Long remainAmount;
+
+    private Long remainVat;
+
     @JsonGetter("id")
     public String getId() {
         return PRE_FIX + StringUtils.leftPad(String.valueOf(id), 19, "0");
+    }
+
+    @JsonGetter("originId")
+    public String getOriginId() {
+        return PRE_FIX + StringUtils.leftPad(String.valueOf(originId), 19, "0");
     }
 
     @JsonGetter("card")
