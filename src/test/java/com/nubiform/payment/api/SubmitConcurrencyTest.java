@@ -2,6 +2,8 @@ package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
+import com.nubiform.payment.repository.BalanceRepository;
+import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,26 +11,39 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class SubmitConcurrencyTest {
 
     public static final int N_THREADS = 100;
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    BalanceRepository balanceRepository;
+
+    @Autowired
+    HistoryRepository historyRepository;
 
     @Autowired
     SentRepository sentRepository;
@@ -52,7 +67,6 @@ class SubmitConcurrencyTest {
     public void postPayment() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
-
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
@@ -68,5 +82,23 @@ class SubmitConcurrencyTest {
             });
         }
         countDownLatch.await();
+
+        assertion();
+    }
+
+    private void assertion() {
+        Map<Long, LocalDateTime> sent = sentRepository.findAll().stream()
+                .collect(Collectors.toMap(a -> a.getId(), a -> a.getLastModifiedDate()));
+
+        var ref = new Object() {
+            LocalDateTime checkTime = null;
+        };
+        historyRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate")).stream()
+                .forEach(a -> {
+                    if (ref.checkTime != null)
+                        // 이전 트랜잭션의 종료시간이 다음 트랜잭션의 시작시간보다 작아야 한다.
+                        assertTrue(ref.checkTime.isBefore(a.getCreatedDate()));
+                    ref.checkTime = sent.get(a.getId());
+                });
     }
 }

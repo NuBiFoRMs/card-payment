@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class CancelConcurrencyTest {
 
     public static final int N_THREADS = 1000;
@@ -81,7 +83,6 @@ class CancelConcurrencyTest {
 
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
-
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
@@ -98,7 +99,7 @@ class CancelConcurrencyTest {
         }
         countDownLatch.await();
 
-        validation(cancelRequest.getLongId());
+        assertion(cancelRequest.getLongId());
     }
 
     @Test
@@ -107,7 +108,6 @@ class CancelConcurrencyTest {
 
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
-
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
@@ -124,10 +124,10 @@ class CancelConcurrencyTest {
         }
         countDownLatch.await();
 
-        validation(cancelRequest.getLongId());
+        assertion(cancelRequest.getLongId());
     }
 
-    private void validation(Long id) {
+    private void assertion(Long id) {
         History history = historyRepository.findById(id).orElse(null);
         assertNotNull(history);
 
