@@ -23,8 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -48,9 +46,6 @@ class CancelConcurrencyTest {
 
     @Autowired
     PaymentService paymentService;
-
-    @PersistenceContext
-    EntityManager em;
 
     @Autowired
     BalanceRepository balanceRepository;
