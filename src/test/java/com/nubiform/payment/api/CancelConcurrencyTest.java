@@ -81,7 +81,6 @@ class CancelConcurrencyTest {
 
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(N_THREADS);
-
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
