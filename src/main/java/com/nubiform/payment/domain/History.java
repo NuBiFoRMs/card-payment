@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @Entity
-public class History {
+public class History extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
