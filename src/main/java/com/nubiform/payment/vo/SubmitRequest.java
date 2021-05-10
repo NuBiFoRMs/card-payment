@@ -45,9 +45,4 @@ public class SubmitRequest {
         if (this.installment == 1) this.installment = 0;
         return this.installment;
     }
-
-    public Long getVat() {
-        if (this.vat == null) this.vat = Math.round(this.amount / VAT_RATE);
-        return vat;
-    }
 }

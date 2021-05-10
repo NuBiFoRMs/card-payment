@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PaymentService {
 
+    public static final double VAT_RATE = 11D;
+
     private final BalanceRepository balanceRepository;
     private final CardLockRepository cardLockRepository;
     private final HistoryRepository historyRepository;
@@ -34,6 +36,10 @@ public class PaymentService {
     private final ModelMapper modelMapper;
 
     public Sent submit(SubmitRequest submitRequest) throws Exception {
+        if (submitRequest.getVat() == null) submitRequest.setVat(calculateVat(submitRequest.getAmount()));
+        else if (submitRequest.getVat() > submitRequest.getAmount())
+            throw new PaymentException(ErrorCode.VatIsNotGreaterThanAmount);
+
         Card card = modelMapper.map(submitRequest, Card.class);
         String encryptedCard = encryption.encrypt(card.toData());
 
@@ -70,12 +76,13 @@ public class PaymentService {
         if (balance.isCanceled()) throw new PaymentException(ErrorCode.PaymentIsAlreadyCanceled);
 
         if (cancelRequest.getVat() == null) {
-            long vat = Math.round(cancelRequest.getAmount() / 11D);
+            long vat = calculateVat(cancelRequest.getAmount());
             if (balance.getAmount() - cancelRequest.getAmount() == 0 && balance.getVat() < vat)
                 cancelRequest.setVat(balance.getVat());
             else
                 cancelRequest.setVat(vat);
-        }
+        } else if (cancelRequest.getVat() > cancelRequest.getAmount())
+            throw new PaymentException(ErrorCode.VatIsNotGreaterThanAmount);
 
         if (!balance.cancel(cancelRequest.getAmount(), cancelRequest.getVat()))
             throw new PaymentException(ErrorCode.NotEnoughAmountOrVat);
@@ -97,6 +104,10 @@ public class PaymentService {
         data.setOriginId(history.getBalance().getId());
 
         return sendPaymentData(data);
+    }
+
+    private long calculateVat(long amount) {
+        return Math.round(amount / VAT_RATE);
     }
 
     public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {

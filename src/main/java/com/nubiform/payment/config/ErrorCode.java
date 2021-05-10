@@ -9,6 +9,7 @@ public enum ErrorCode {
     NotEnoughAmountOrVat(1001, "Not enough amount or vat"),
     PaymentIsProcessing(1002, "Payment is processing"),
     PaymentIsAlreadyCanceled(1003, "Payment is already canceled"),
+    VatIsNotGreaterThanAmount(1004, "Vat is not greater than amount"),
 
     UnknownError(9999, "Unknown error");
 
