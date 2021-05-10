@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
@@ -60,7 +61,7 @@ class CancelTest {
 
     @Test
     public void delPayment() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
+        MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
@@ -76,7 +77,7 @@ class CancelTest {
     public void delPaymentFailure() throws Exception {
         cancelRequest.setAmount(1000000L);
 
-        mockMvc.perform(delete("/api/v1/payment")
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())

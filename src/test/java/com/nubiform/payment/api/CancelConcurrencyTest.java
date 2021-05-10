@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.History;
 import com.nubiform.payment.repository.BalanceRepository;
@@ -77,7 +78,7 @@ class CancelConcurrencyTest {
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
-                    MvcResult mvcResult = mockMvc.perform(delete("/api/v1/payment")
+                    MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cancelRequest)))
                             .andReturn();

@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.vo.Response;
@@ -47,7 +48,7 @@ class SubmitTest {
 
     @Test
     public void postPayment() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(post("/api/v1/payment")
+        MvcResult mvcResult = mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andDo(print())
