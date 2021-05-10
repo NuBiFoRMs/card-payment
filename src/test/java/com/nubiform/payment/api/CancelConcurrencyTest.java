@@ -109,7 +109,7 @@ class CancelConcurrencyTest {
         long amountSum = historyListByBalance.stream().mapToLong(History::getAmount).sum();
         long vatSum = historyListByBalance.stream().mapToLong(History::getVat).sum();
 
-        assertEquals(history.getAmount(), amountSum);
-        assertEquals(history.getVat(), vatSum);
+        assertEquals(balance.getAmount(), history.getAmount() - amountSum);
+        assertEquals(balance.getVat(), history.getVat() - vatSum);
     }
 }
