@@ -14,7 +14,7 @@ import javax.persistence.Version;
 @Setter
 @ToString
 @Entity
-public class Balance {
+public class Balance extends BaseTimeEntity {
 
     @Id
     private Long id;

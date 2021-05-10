@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @Setter
 @ToString
 @Entity
-public class Sent {
+public class Sent extends BaseTimeEntity {
 
     @Id
     private Long id;
