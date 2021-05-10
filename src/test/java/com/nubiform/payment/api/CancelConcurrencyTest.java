@@ -1,6 +1,7 @@
 package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.config.PaymentType;
 import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.domain.History;
@@ -20,10 +21,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @ActiveProfiles("test")
@@ -91,14 +95,21 @@ class CancelConcurrencyTest {
         }
         countDownLatch.await();
 
-        balanceRepository.findById(cancelRequest.getLongId())
-                .stream()
-                .map(Balance::toString)
-                .forEach(System.out::println);
+        validation(cancelRequest.getLongId());
+    }
 
-        historyRepository.findById(cancelRequest.getLongId())
-                .stream()
-                .map(History::toString)
-                .forEach(System.out::println);
+    private void validation(Long id) {
+        History history = historyRepository.findById(id).orElse(null);
+        assertNotNull(history);
+
+        Balance balance = balanceRepository.findById(id).orElse(null);
+        assertNotNull(balance);
+
+        List<History> historyListByBalance = historyRepository.findByBalanceAndType(balance, PaymentType.CANCEL);
+        long amountSum = historyListByBalance.stream().mapToLong(History::getAmount).sum();
+        long vatSum = historyListByBalance.stream().mapToLong(History::getVat).sum();
+
+        assertEquals(history.getAmount(), amountSum);
+        assertEquals(history.getVat(), vatSum);
     }
 }
