@@ -16,16 +16,20 @@ import javax.validation.constraints.Pattern;
 @Data
 public class SubmitRequest {
 
+    public static final String CARD_REGEXP = "^[0-9]{10,16}$";
+    public static final String EXPIRATION_REGEXP = "^[0-9]{4}$";
+    public static final String CVC_REGEXP = "^[0-9]{3}$";
+
     @NotBlank
-    @Pattern(regexp = "^[0-9]{10,16}$")
+    @Pattern(regexp = CARD_REGEXP)
     private String card;
 
     @NotBlank
-    @Pattern(regexp = "^[0-9]{4}$")
+    @Pattern(regexp = EXPIRATION_REGEXP)
     private String expiration;
 
     @NotBlank
-    @Pattern(regexp = "^[0-9]{3}$")
+    @Pattern(regexp = CVC_REGEXP)
     private String cvc;
 
     @NotNull
