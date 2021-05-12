@@ -53,6 +53,6 @@ public class SentData {
                 // 문자 47
                 .append(StringUtils.rightPad("", 47, " "))
         ;
-        return StringUtils.leftPad(String.valueOf(data.length()), 4, " ") + data.toString();
+        return StringUtils.leftPad(String.valueOf(data.length()), 4, " ") + data;
     }
 }

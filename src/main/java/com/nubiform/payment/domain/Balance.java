@@ -50,7 +50,6 @@ public class Balance extends BaseTimeEntity {
     }
 
     public boolean isCanceled() {
-        if (PaymentType.CANCEL.equals(this.status)) return true;
-        return false;
+        return PaymentType.CANCEL.equals(this.status);
     }
 }

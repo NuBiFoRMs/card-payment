@@ -9,6 +9,4 @@ import java.util.List;
 public interface HistoryRepository extends JpaRepository<History, Long> {
 
     List<History> findByBalance(Balance balance);
-
-    List<History> findByBalanceAndType(Balance balance, String type);
 }
