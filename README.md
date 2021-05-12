@@ -14,6 +14,8 @@
 
 ## 개발 프레임워크
 
+- JDK 11
+- Gradle
 - Spring Boot
 - Spring Data JPA
 - H2 Database
