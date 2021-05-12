@@ -24,7 +24,6 @@ class AES256Test {
 
         AES256 aes256 = new AES256();
         String encrypt = aes256.encrypt(card.toData());
-        System.out.println(encrypt);
         Card newCard = new Card(aes256.decrypt(encrypt));
 
         assertEquals(card.getCard(), newCard.getCard());
@@ -41,7 +40,6 @@ class AES256Test {
 
         AES256 aes256 = new AES256();
         String encrypt = aes256.encrypt(card.toData());
-        System.out.println(encrypt);
         Card newCard = new Card(aes256.decrypt(encrypt));
 
         assertEquals(card.getCard(), newCard.getCard());
