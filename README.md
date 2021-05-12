@@ -47,6 +47,8 @@
 
 ## 빌드 및 실행 방법
 
+- Gradle Build
+
 ```
 git clone https://github.com/NuBiFoRMs/card-payment.git
 cd card-payment
@@ -54,6 +56,5 @@ gradle build
 java -jar build/libs/card-payment-0.0.1-SNAPSHOT.jar
 ```
 
-### Swagger UI
-
-* [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- Swagger UI
+    - [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
