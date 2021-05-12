@@ -75,7 +75,6 @@ class SubmitConcurrencyTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(submitRequest)))
                             .andReturn();
-                    System.out.println(mvcResult.getResponse().getContentAsString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
