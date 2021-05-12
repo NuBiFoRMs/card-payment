@@ -47,17 +47,11 @@
 
 ## 빌드 및 실행 방법
 
-### 실행 방법 1
-
-```bash
-$ gradle build
-$ java -jar build/libs/card-payment-0.0.1-SNAPSHOT.jar
 ```
-
-### 실행 방법 2
-
-```bash
-$ gradle bootRun
+git clone https://github.com/NuBiFoRMs/card-payment.git
+cd card-payment
+gradle build
+java -jar build/libs/card-payment-0.0.1-SNAPSHOT.jar
 ```
 
 ### Swagger UI
