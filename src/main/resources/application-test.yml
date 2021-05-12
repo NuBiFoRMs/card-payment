@@ -2,16 +2,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    properties:
-      hibernate:
-        format_sql: false
-        show_sql: false
-
-logging:
-  level:
-    com.nubiform: error
-    org.hibernate.SQL: error
-    org.hibernate.type.descriptor.sql.BasicBinder: error
-
-# swagger-ui custom path
-springdoc.swagger-ui.path: /swagger-ui.html
