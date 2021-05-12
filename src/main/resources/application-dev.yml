@@ -1,4 +1,7 @@
 spring:
+  devtools:
+    add-properties: true
+
   h2:
     console:
       enabled: true
