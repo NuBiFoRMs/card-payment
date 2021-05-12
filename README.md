@@ -14,6 +14,10 @@
 
 ## 개발 프레임워크
 
+- Spring Boot
+- Spring Data JPA
+- H2 Database
+
 ## 테이블 설계
 
 ![ERD](docs/erd.png)
