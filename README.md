@@ -58,7 +58,7 @@
 git clone https://github.com/NuBiFoRMs/card-payment.git
 cd card-payment
 gradle build
-java -jar build/libs/card-payment-0.0.1-SNAPSHOT.jar
+java -jar build/libs/card-payment-1.0.0.jar
 ```
 
 - Swagger UI
