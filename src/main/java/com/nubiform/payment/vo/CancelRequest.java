@@ -20,7 +20,7 @@ public class CancelRequest {
     private String id;
 
     @NotNull
-    @Range(min = 0, max = 1000000000)
+    @Range(min = 1, max = 1000000000)
     private Long amount;
 
     @Range(min = 0, max = 1000000000)

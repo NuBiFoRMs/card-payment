@@ -2,7 +2,11 @@ package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
+import com.nubiform.payment.domain.Balance;
+import com.nubiform.payment.domain.History;
 import com.nubiform.payment.domain.Sent;
+import com.nubiform.payment.repository.BalanceRepository;
+import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.vo.SubmitRequest;
 import com.nubiform.payment.vo.TestResponse;
@@ -15,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,6 +32,12 @@ class SubmitTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    BalanceRepository balanceRepository;
+
+    @Autowired
+    HistoryRepository historyRepository;
 
     @Autowired
     SentRepository sentRepository;
@@ -59,7 +70,15 @@ class SubmitTest {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
         TestResponse response = objectMapper.readValue(responseBody, TestResponse.class);
+        Balance balance = balanceRepository.findById(response.getLongId()).orElse(null);
+        History history = historyRepository.findById(response.getLongId()).orElse(null);
         Sent sent = sentRepository.findById(response.getLongId()).orElse(null);
+
+        assertNotNull(balance);
+        assertEquals(submitRequest.getAmount(), balance.getRemainAmount());
+
+        assertNotNull(history);
+        assertEquals(submitRequest.getAmount(), history.getAmount());
 
         assertNotNull(sent);
     }
