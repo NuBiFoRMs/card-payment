@@ -2,14 +2,12 @@ package com.nubiform.payment.vo;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CardTest {
 
     @Test
-    public void testCard() throws IOException {
+    public void testCard() {
         Card card = new Card("1234567890123456|1234|123");
 
         assertEquals("1234567890123456", card.getCard());
@@ -18,7 +16,7 @@ class CardTest {
     }
 
     @Test
-    public void testToData() throws IOException {
+    public void testToData() {
         Card card = new Card();
         card.setCard("1234567890123456");
         card.setExpiration("1234");

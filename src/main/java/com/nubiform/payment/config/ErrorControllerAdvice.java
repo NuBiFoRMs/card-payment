@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ErrorControllerAdvice {
 
     @ExceptionHandler(PaymentException.class)
-    public ResponseEntity paymentException(HttpServletRequest request, HttpServletResponse response, PaymentException ex) {
+    public ResponseEntity<ErrorResponse> paymentException(HttpServletRequest request, HttpServletResponse response, PaymentException ex) {
         log.error("code: {} message: {}", ex.getCode(), ex.getMessage());
         return ResponseEntity.ok(ErrorResponse.builder()
                 .code(ex.getCode())
@@ -28,13 +28,21 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler({ObjectOptimisticLockingFailureException.class, DataIntegrityViolationException.class})
-    public ResponseEntity objectOptimisticLockingFailureExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+    public ResponseEntity<ErrorResponse> objectOptimisticLockingFailureExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
         log.error("message: {}", ex.getMessage());
         return paymentException(request, response, new PaymentException(ErrorCode.PaymentIsProcessing));
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> validationException(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+        log.error("message: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity httpMessageNotReadableException(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+    public ResponseEntity<ErrorResponse> httpMessageNotReadableException(HttpServletRequest request, HttpServletResponse response, Exception ex) {
         log.error("message: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -42,7 +50,7 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity noHandlerFoundExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+    public ResponseEntity<ErrorResponse> noHandlerFoundExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
         log.error("message: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -50,7 +58,7 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+    public ResponseEntity<ErrorResponse> exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
         log.error("exceptionClass: {}", ex.getClass().toString());
         log.error("exceptionMessage: {}", ex.getMessage());
         return ResponseEntity

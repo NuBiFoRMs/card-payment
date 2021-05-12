@@ -168,8 +168,6 @@ class Tests {
 
         Balance balance = balanceRepository.findById(id).orElse(null);
 
-        System.out.println(balance);
-
         assertNotNull(balance);
         assertEquals(expectedAmount, balance.getRemainAmount(), "assert amount");
         assertEquals(expectedVat, balance.getRemainVat(), "assert vat");

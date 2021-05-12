@@ -2,6 +2,7 @@ package com.nubiform.payment.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
+import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
@@ -74,7 +75,6 @@ class SubmitConcurrencyTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(submitRequest)))
                             .andReturn();
-                    System.out.println(mvcResult.getResponse().getContentAsString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -88,12 +88,12 @@ class SubmitConcurrencyTest {
 
     private void assertion() {
         Map<Long, LocalDateTime> sent = sentRepository.findAll().stream()
-                .collect(Collectors.toMap(a -> a.getId(), a -> a.getLastModifiedDate()));
+                .collect(Collectors.toMap(Sent::getId, Sent::getLastModifiedDate));
 
         var ref = new Object() {
             LocalDateTime checkTime = null;
         };
-        historyRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate")).stream()
+        historyRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"))
                 .forEach(a -> {
                     if (ref.checkTime != null)
                         // 이전 트랜잭션의 종료시간이 다음 트랜잭션의 시작시간보다 작아야 한다.

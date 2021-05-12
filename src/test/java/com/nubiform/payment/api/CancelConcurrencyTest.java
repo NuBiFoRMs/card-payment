@@ -91,7 +91,6 @@ class CancelConcurrencyTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cancelRequest)))
                             .andReturn();
-                    System.out.println(mvcResult.getResponse().getContentAsString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -117,7 +116,6 @@ class CancelConcurrencyTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cancelRequest)))
                             .andReturn();
-                    System.out.println(mvcResult.getResponse().getContentAsString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -146,10 +144,6 @@ class CancelConcurrencyTest {
                 .filter(a -> a.getType().equals(PaymentType.CANCEL))
                 .mapToLong(History::getVat)
                 .sum();
-
-        historyListByBalance.stream()
-                .map(History::toString)
-                .forEach(System.out::println);
 
         assertEquals(balance.getRemainAmount(), history.getAmount() - amountSum);
         assertEquals(balance.getRemainVat(), history.getVat() - vatSum);
