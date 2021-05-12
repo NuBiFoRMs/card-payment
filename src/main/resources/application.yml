@@ -4,6 +4,10 @@ spring:
     username: sa
     password: sa
 
+  h2:
+    console:
+      enabled: false
+
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,5 +15,4 @@ spring:
   mvc:
     throw-exception-if-no-handler-found: true
 
-# swagger-ui custom path
 springdoc.swagger-ui.path: /swagger-ui.html
