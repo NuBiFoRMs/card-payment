@@ -149,7 +149,18 @@ class InvalidParamTest {
     }
 
     @Test
-    public void delPaymentWrongAmount() throws Exception {
+    public void delPaymentWrongAmountMin() throws Exception {
+        cancelRequest.setAmount(0L);
+
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cancelRequest)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void delPaymentWrongAmountMax() throws Exception {
         cancelRequest.setAmount(1000000001L);
 
         mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
