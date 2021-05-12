@@ -3,6 +3,7 @@ package com.nubiform.payment.domain;
 import com.nubiform.payment.config.PaymentType;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
@@ -19,8 +20,10 @@ public class Balance extends BaseTimeEntity {
     @Id
     private Long id;
 
+    @Column(length = 30)
     private String status;
 
+    @Column(length = 300)
     private String card;
 
     private Integer installment;

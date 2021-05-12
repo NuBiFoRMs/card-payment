@@ -17,8 +17,10 @@ public class History extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
+    @Column(length = 30)
     private String type;
 
+    @Column(length = 300)
     private String card;
 
     private Integer installment;
