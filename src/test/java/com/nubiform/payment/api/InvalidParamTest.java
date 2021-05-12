@@ -3,6 +3,7 @@ package com.nubiform.payment.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.Id;
 import com.nubiform.payment.vo.PaymentRequest;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,11 +42,11 @@ class InvalidParamTest {
         submitRequest.setAmount(10000L);
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId(1L);
+        cancelRequest.setId(Id.convert(1L));
         cancelRequest.setAmount(1000L);
 
         paymentRequest = new PaymentRequest();
-        paymentRequest.setId(1L);
+        paymentRequest.setId(Id.convert(1L));
     }
 
     @Test

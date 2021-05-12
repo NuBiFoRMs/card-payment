@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
+import com.nubiform.payment.vo.Id;
 import com.nubiform.payment.vo.PaymentRequest;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ class PaymentTest {
         Long id = paymentService.submit(submitRequest).getId();
 
         paymentRequest = new PaymentRequest();
-        paymentRequest.setId(id);
+        paymentRequest.setId(Id.convert(id));
     }
 
     @Test

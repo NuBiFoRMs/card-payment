@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.domain.Sent;
 import com.nubiform.payment.repository.SentRepository;
-import com.nubiform.payment.vo.Response;
 import com.nubiform.payment.vo.SubmitRequest;
+import com.nubiform.payment.vo.TestResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ class SubmitTest {
                 .andReturn();
 
         String responseBody = mvcResult.getResponse().getContentAsString();
-        Response response = objectMapper.readValue(responseBody, Response.class);
+        TestResponse response = objectMapper.readValue(responseBody, TestResponse.class);
         Sent sent = sentRepository.findById(response.getLongId()).orElse(null);
 
         assertNotNull(sent);

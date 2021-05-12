@@ -2,8 +2,6 @@ package com.nubiform.payment.vo;
 
 public class TestResponse {
 
-    public static final String PRE_FIX = "N";
-
     private String id;
 
     public void setId(String id) {
@@ -11,10 +9,10 @@ public class TestResponse {
     }
 
     public Long getLongId() {
-        return Long.valueOf(id.replace(PRE_FIX, ""));
+        return Id.convert(this.id);
     }
 
     public String getStringId() {
-        return id;
+        return this.id;
     }
 }

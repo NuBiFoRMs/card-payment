@@ -16,8 +16,6 @@ import javax.validation.constraints.Pattern;
 @Data
 public class SubmitRequest {
 
-    public static final double VAT_RATE = 11D;
-
     @NotBlank
     @Pattern(regexp = "^[0-9]{10,16}$")
     private String card;
