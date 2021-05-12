@@ -10,6 +10,7 @@ import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.Id;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +74,7 @@ class CancelConcurrencyTest {
         Long id = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId(id);
+        cancelRequest.setId(Id.convert(id));
     }
 
     @DisplayName("전체취소 : 결제 한 건에 대한 전체취소를 동시에 할 수 없습니다.")

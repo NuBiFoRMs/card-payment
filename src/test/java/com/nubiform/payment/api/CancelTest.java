@@ -6,6 +6,7 @@ import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
+import com.nubiform.payment.vo.Id;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ class CancelTest {
         Long id = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId(id);
+        cancelRequest.setId(Id.convert(id));
         cancelRequest.setAmount(10000L);
     }
 
