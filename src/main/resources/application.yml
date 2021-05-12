@@ -6,23 +6,13 @@ spring:
 
   h2:
     console:
-      enabled: true
+      enabled: false
 
   jpa:
     hibernate:
       ddl-auto: create-drop
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
 
   mvc:
     throw-exception-if-no-handler-found: true
 
-logging:
-  level:
-    com.nubiform: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-
-# swagger-ui custom path
 springdoc.swagger-ui.path: /swagger-ui.html

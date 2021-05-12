@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NameTokenizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.sql.SQLException;
 
@@ -27,6 +28,7 @@ public class AppConfig {
         return modelMapper;
     }
 
+    @Profile("dev")
     @Bean
     public Server h2TcpServer() throws SQLException {
         return Server.createTcpServer().start();

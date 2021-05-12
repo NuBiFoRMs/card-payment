@@ -1,0 +1,17 @@
+spring:
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+logging:
+  level:
+    com.nubiform: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace

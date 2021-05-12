@@ -2,6 +2,7 @@ package com.nubiform.payment.domain;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
@@ -18,8 +19,10 @@ import java.util.UUID;
 public class CardLock {
 
     @Id
+    @Column(length = 300)
     private String card;
 
+    @Column(length = 50)
     private String lockId;
 
     private LocalDateTime lockIdGeneratedAt;
