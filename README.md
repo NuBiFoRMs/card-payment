@@ -16,6 +16,8 @@
 
 ## 테이블 설계
 
+![ERD](docs/erd.png)
+
 ## 문제해결 전략
 
 ## 빌드 및 실행 방법
@@ -32,6 +34,7 @@ $ java -jar build/libs/card-payment-0.0.1-SNAPSHOT.jar
 ```bash
 $ gradle bootRun
 ```
+
 ### Swagger UI
 
 * [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
