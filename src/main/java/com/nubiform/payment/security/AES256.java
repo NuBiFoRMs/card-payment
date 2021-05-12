@@ -8,24 +8,26 @@ import java.util.Base64;
 
 public class AES256 implements Encryption {
 
-    public static String alg = "AES/CBC/PKCS5Padding";
+    public static final String ALGORITHM = "AES";
+    public static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    public static final String DEFAULT_KEY = "0123456789012345678901234567890123456789";
 
     private final String key;
     private final String iv;
 
     public AES256() {
-        this.key = "012345678901234567890123456789";
-        this.iv = key.substring(0, 16); // 16byte
+        this.key = DEFAULT_KEY;
+        this.iv = key.substring(0, 16);
     }
 
     public AES256(String key) {
         this.key = key;
-        this.iv = key.substring(0, 16); // 16byte
+        this.iv = key.substring(0, 16);
     }
 
     public String encrypt(String text) throws Exception {
-        Cipher cipher = Cipher.getInstance(alg);
-        SecretKeySpec keySpec = new SecretKeySpec(iv.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        SecretKeySpec keySpec = new SecretKeySpec(iv.getBytes(), ALGORITHM);
         IvParameterSpec ivParamSpec = new IvParameterSpec(iv.getBytes());
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParamSpec);
 
@@ -34,8 +36,8 @@ public class AES256 implements Encryption {
     }
 
     public String decrypt(String cipherText) throws Exception {
-        Cipher cipher = Cipher.getInstance(alg);
-        SecretKeySpec keySpec = new SecretKeySpec(iv.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        SecretKeySpec keySpec = new SecretKeySpec(iv.getBytes(), ALGORITHM);
         IvParameterSpec ivParamSpec = new IvParameterSpec(iv.getBytes());
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParamSpec);
 

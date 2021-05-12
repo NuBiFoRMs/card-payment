@@ -16,3 +16,6 @@ spring:
     throw-exception-if-no-handler-found: true
 
 springdoc.swagger-ui.path: /swagger-ui.html
+
+app:
+  secret-key: VGhleSB3YW5kZXJlZCBpbnRvIGEgc3RyYW5nZSBUaWtpIGJhciBvbiB0aGUgZWRnZSBvZiB0aGUgc21hbGwgYmVhY2ggdG93bi4=
