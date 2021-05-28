@@ -90,15 +90,12 @@ class SubmitConcurrencyTest {
         Map<Long, LocalDateTime> sent = sentRepository.findAll().stream()
                 .collect(Collectors.toMap(Sent::getId, Sent::getLastModifiedDate));
 
-        var ref = new Object() {
-            LocalDateTime checkTime = null;
-        };
-        historyRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate"))
-                .forEach(a -> {
-                    if (ref.checkTime != null)
-                        // 이전 트랜잭션의 종료시간이 다음 트랜잭션의 시작시간보다 작아야 한다.
-                        assertTrue(ref.checkTime.isBefore(a.getCreatedDate()));
-                    ref.checkTime = sent.get(a.getId());
+        historyRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate")).stream()
+                .reduce((before, after) -> {
+                    // 이전 트랜잭션의 종료시간이 다음 트랜잭션의 시작시간보다 작아야 한다.
+                    // a의 종료시간, b의 시작시간
+                    assertTrue(sent.get(before.getId()).isBefore(after.getCreatedDate()));
+                    return after;
                 });
     }
 }
