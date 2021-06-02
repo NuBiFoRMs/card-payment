@@ -25,3 +25,12 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Check with Gradle
+        run: ./gradlew check
+      - name: Report with Gradle
+        run: ./gradlew jacocoTestReport
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Codecov upload
+        run: bash <(curl -s https://codecov.io/bash)
