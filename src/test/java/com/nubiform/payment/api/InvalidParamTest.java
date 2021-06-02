@@ -197,20 +197,6 @@ class InvalidParamTest {
     }
 
     @Test
-    public void delPaymentWrongAmountVat() throws Exception {
-        cancelRequest.setAmount(10000L);
-        cancelRequest.setVat(10001L);
-
-        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cancelRequest)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").exists())
-                .andExpect(jsonPath("$.message").exists());
-    }
-
-    @Test
     public void getPaymentWrongId() throws Exception {
         paymentRequest.setId("1234567890");
 
