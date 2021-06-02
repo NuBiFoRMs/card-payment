@@ -2,6 +2,7 @@
 
 ![Tag](https://img.shields.io/github/v/tag/nubiforms/card-payment)
 ![Travis](https://img.shields.io/travis/com/nubiforms/card-payment)
+[![codecov](https://codecov.io/gh/NuBiFoRMs/card-payment/branch/develop/graph/badge.svg?token=CUPAW61JYO)](https://codecov.io/gh/NuBiFoRMs/card-payment)
 
 ![Languages Count](https://img.shields.io/github/languages/count/nubiforms/card-payment)
 ![Languages Top](https://img.shields.io/github/languages/top/nubiforms/card-payment)
