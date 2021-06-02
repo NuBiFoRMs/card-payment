@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -138,6 +139,20 @@ class InvalidParamTest {
     }
 
     @Test
+    public void postPaymentWrongAmountVat() throws Exception {
+        submitRequest.setAmount(10000L);
+        submitRequest.setVat(10001L);
+
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(submitRequest)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
     public void delPaymentWrongId() throws Exception {
         cancelRequest.setId("1234567890");
 
@@ -179,6 +194,20 @@ class InvalidParamTest {
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void delPaymentWrongAmountVat() throws Exception {
+        cancelRequest.setAmount(10000L);
+        cancelRequest.setVat(10001L);
+
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cancelRequest)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
