@@ -64,11 +64,17 @@ public class PaymentService {
         history.setBalance(balance);
         historyRepository.save(history);
 
-        SentData data = modelMapper.map(history, SentData.class);
-        modelMapper.map(card, data);
-        data.setEncryptedCard(history.getCard());
+        PaymentPayload paymentPayload = PaymentPayload.builder()
+                .type(PaymentType.PAYMENT)
+                .id(Id.convert(history.getId()))
+                .installment(history.getInstallment())
+                .amount(history.getAmount())
+                .vat(history.getVat())
+                .encryptedCard(history.getCard())
+                .build();
+        modelMapper.map(card, paymentPayload);
 
-        return sendPaymentData(data);
+        return sendPaymentPayload(paymentPayload);
     }
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
@@ -134,6 +140,16 @@ public class PaymentService {
         Sent sent = Sent.builder()
                 .id(data.getId())
                 .data(data.toString())
+                .build();
+        sentRepository.save(sent);
+        return sent;
+    }
+
+    private Sent sendPaymentPayload(PaymentPayload paymentPayload) {
+        log.debug("paymentPayload: {}", paymentPayload);
+        Sent sent = Sent.builder()
+                .id(Id.convert(paymentPayload.getId()))
+                .data(paymentPayload.serialize())
                 .build();
         sentRepository.save(sent);
         return sent;
