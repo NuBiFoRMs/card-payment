@@ -65,7 +65,7 @@ public class PaymentService {
         historyRepository.save(history);
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
-                .type(PaymentType.PAYMENT)
+                .type(history.getType())
                 .id(Id.convert(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
@@ -106,12 +106,19 @@ public class PaymentService {
         historyRepository.save(history);
 
         Card card = new Card(encryption.decrypt(history.getCard()));
-        SentData data = modelMapper.map(history, SentData.class);
-        modelMapper.map(card, data);
-        data.setEncryptedCard(history.getCard());
-        data.setOriginId(history.getBalance().getId());
 
-        return sendPaymentData(data);
+        PaymentPayload paymentPayload = PaymentPayload.builder()
+                .type(history.getType())
+                .id(Id.convert(history.getId()))
+                .installment(history.getInstallment())
+                .amount(history.getAmount())
+                .vat(history.getVat())
+                .originId(Id.convert(history.getBalance().getId()))
+                .encryptedCard(history.getCard())
+                .build();
+        modelMapper.map(card, paymentPayload);
+
+        return sendPaymentPayload(paymentPayload);
     }
 
     private long calculateVat(long amount) {
@@ -134,15 +141,6 @@ public class PaymentService {
         paymentResponse.setRemainVat(balance.getRemainVat());
 
         return paymentResponse;
-    }
-
-    private Sent sendPaymentData(SentData data) {
-        Sent sent = Sent.builder()
-                .id(data.getId())
-                .data(data.toString())
-                .build();
-        sentRepository.save(sent);
-        return sent;
     }
 
     private Sent sendPaymentPayload(PaymentPayload paymentPayload) {
