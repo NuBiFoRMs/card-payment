@@ -23,7 +23,6 @@ public class PayloadSerializer {
                         return f1.getName().compareTo(f2.getName());
                     else return compare;
                 })
-//                .sorted(Comparator.comparingInt(field -> field.getAnnotation(PayloadField.class).order()))
                 .forEach(field -> {
                     Optional.ofNullable(field.getAnnotation(PayloadField.class))
                             .ifPresent(payloadField -> {
