@@ -19,9 +19,10 @@ class PaymentPayloadTest {
                 .vat(7L)
                 .originId("8")
                 .encryptedCard("9")
+                .extraField("10")
                 .build();
 
-        assertEquals(" 3890         1                   2         034   5           600000000078                   9                                                                                                                                                                                                                                                                                                           ",
+        assertEquals(" 4460         1                   2                   034   5           600000000078                   9                                                                                                                                                                                                                                                                                                           10                                             ",
                 paymentPayload.serialize());
     }
 

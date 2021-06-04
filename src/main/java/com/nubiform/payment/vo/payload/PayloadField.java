@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface PayloadField {
 
-    PayloadFormatter formatter();
+    PayloadFormatter formatter() default PayloadFormatter.STRING;
 
     int order();
 
