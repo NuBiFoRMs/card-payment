@@ -10,10 +10,10 @@ public class PayloadSerializer {
 
     private static final int DEFAULT_PAYLOAD_SIZE = 500;
 
-    public static String serializer(PayloadSerializable object) {
+    public static String serializer(PayloadSerializable payloadObject) {
         StringBuilder payloadBuilder = new StringBuilder(DEFAULT_PAYLOAD_SIZE);
 
-        Arrays.stream(FieldUtils.getAllFields(object.getClass()))
+        Arrays.stream(FieldUtils.getAllFields(payloadObject.getClass()))
                 .filter(field -> Objects.nonNull(field.getAnnotation(PayloadField.class)))
                 .sorted((f1, f2) -> {
                     int compare = Integer.compare(f1.getAnnotation(PayloadField.class).order(), f2.getAnnotation(PayloadField.class).order());
@@ -29,7 +29,7 @@ public class PayloadSerializer {
                                     payloadBuilder.append(payloadField
                                             .formatter()
                                             .format(
-                                                    FieldUtils.readField(field, object, true),
+                                                    FieldUtils.readField(field, payloadObject, true),
                                                     payloadField.length()
                                             ));
                                 } catch (IllegalAccessException e) {

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PayloadTest {
 
     @Test
-    public void test1() {
+    public void payloadTest1() {
         String payload = Optional.ofNullable(new TestPayload1())
                 .map(TestPayload1::serialize)
                 .get();
@@ -30,7 +30,7 @@ class PayloadTest {
     }
 
     @Test
-    public void test2() {
+    public void payloadTest2() {
         String payload = Optional.ofNullable(new TestPayload2())
                 .map(TestPayload2::serialize)
                 .get();
