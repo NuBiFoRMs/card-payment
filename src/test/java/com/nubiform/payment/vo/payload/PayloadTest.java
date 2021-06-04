@@ -19,10 +19,10 @@ class PayloadTest {
 
     private class TestPayload1 implements PayloadSerializable {
 
-        @PayloadField(formatter = PayloadFormatter.STRING, order = 1, length = 10)
+        @PayloadField(order = 1, length = 10)
         String field1 = "field1";
 
-        @PayloadField(formatter = PayloadFormatter.STRING, order = 0, length = 10)
+        @PayloadField(order = 0, length = 10)
         String field2 = "field2";
 
         @PayloadField(formatter = PayloadFormatter.NUMBER_0, order = 2, length = 5)
@@ -40,13 +40,13 @@ class PayloadTest {
 
     private class TestPayload2 implements PayloadSerializable {
 
-        @PayloadField(formatter = PayloadFormatter.STRING, order = 0, length = 10)
+        @PayloadField(order = 0, length = 10)
         String field2 = "field2";
 
-        @PayloadField(formatter = PayloadFormatter.STRING, order = 0, length = 10)
+        @PayloadField(order = 0, length = 10)
         String field1 = "field1";
 
-        @PayloadField(formatter = PayloadFormatter.NUMBER_0, order = 2, length = 5)
+        @PayloadField(formatter = PayloadFormatter.NUMBER_0, order = 20, length = 5)
         int field3 = 30;
     }
 }

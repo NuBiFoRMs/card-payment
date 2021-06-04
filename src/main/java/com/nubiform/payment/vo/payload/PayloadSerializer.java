@@ -1,5 +1,6 @@
 package com.nubiform.payment.vo.payload;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.Optional;
 
 public class PayloadSerializer {
 
+    public static final int LENGTH_SIZE = 4;
     private static final int DEFAULT_PAYLOAD_SIZE = 500;
 
     public static String serializer(PayloadSerializable payloadObject) {
@@ -33,11 +35,11 @@ public class PayloadSerializer {
                                                     payloadField.length()
                                             ));
                                 } catch (IllegalAccessException e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
                             });
                 });
 
-        return String.join("", PayloadFormatter.NUMBER.format(payloadBuilder.length(), 4), payloadBuilder);
+        return StringUtils.join(PayloadFormatter.NUMBER.format(payloadBuilder.length(), LENGTH_SIZE), payloadBuilder);
     }
 }
