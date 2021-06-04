@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface PayloadField {
-    
+
     PayloadFormatter formatter();
 
-    int start();
+    int order();
 
     int length();
 }

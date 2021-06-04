@@ -3,29 +3,24 @@ package com.nubiform.payment.vo.payload;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class PayloadSerializer {
 
-    private static final int PAYLOAD_SIZE = 450;
+    private static final int DEFAULT_PAYLOAD_SIZE = 500;
 
     public static String serializer(Object object) {
-        StringBuilder payloadBuilder = Optional
-                .of(new StringBuilder())
-                .map(value -> {
-                    value.setLength(PAYLOAD_SIZE);
-                    return value;
-                })
-                .get();
+        StringBuilder payloadBuilder = new StringBuilder(DEFAULT_PAYLOAD_SIZE);
 
         Arrays.stream(FieldUtils.getAllFields(object.getClass()))
+                .filter(field -> Optional.ofNullable(field.getAnnotation(PayloadField.class)).isPresent())
+                .sorted(Comparator.comparingInt(field -> field.getAnnotation(PayloadField.class).order()))
                 .forEach(field -> {
                     Optional.ofNullable(field.getAnnotation(PayloadField.class))
                             .ifPresent(payloadField -> {
                                 try {
-                                    int start = payloadField.start();
-                                    int end = payloadField.start() + payloadField.length();
-                                    payloadBuilder.replace(start, end, payloadField
+                                    payloadBuilder.append(payloadField
                                             .formatter()
                                             .format(
                                                     FieldUtils.readField(field, object, true),
@@ -37,6 +32,6 @@ public class PayloadSerializer {
                             });
                 });
 
-        return payloadBuilder.toString();
+        return String.join("", PayloadFormatter.NUMBER.format(payloadBuilder.length(), 4), payloadBuilder);
     }
 }
