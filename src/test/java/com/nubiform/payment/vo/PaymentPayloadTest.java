@@ -2,7 +2,7 @@ package com.nubiform.payment.vo;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PaymentPayloadTest {
 
@@ -21,9 +21,8 @@ class PaymentPayloadTest {
                 .encryptedCard("9")
                 .build();
 
-        System.out.println(">" + paymentPayload.serialize() + "<");
-
-        assertTrue(true);
+        assertEquals(" 3890         1                   2         034   5           600000000078                   9                                                                                                                                                                                                                                                                                                           ",
+                paymentPayload.serialize());
     }
 
 }
