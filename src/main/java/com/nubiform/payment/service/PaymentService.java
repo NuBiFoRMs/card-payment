@@ -64,11 +64,17 @@ public class PaymentService {
         history.setBalance(balance);
         historyRepository.save(history);
 
-        SentData data = modelMapper.map(history, SentData.class);
-        modelMapper.map(card, data);
-        data.setEncryptedCard(history.getCard());
+        PaymentPayload paymentPayload = PaymentPayload.builder()
+                .type(history.getType())
+                .id(Id.convert(history.getId()))
+                .installment(history.getInstallment())
+                .amount(history.getAmount())
+                .vat(history.getVat())
+                .encryptedCard(history.getCard())
+                .build();
+        modelMapper.map(card, paymentPayload);
 
-        return sendPaymentData(data);
+        return sendPaymentPayload(paymentPayload);
     }
 
     public Sent cancel(CancelRequest cancelRequest) throws Exception {
@@ -100,12 +106,19 @@ public class PaymentService {
         historyRepository.save(history);
 
         Card card = new Card(encryption.decrypt(history.getCard()));
-        SentData data = modelMapper.map(history, SentData.class);
-        modelMapper.map(card, data);
-        data.setEncryptedCard(history.getCard());
-        data.setOriginId(history.getBalance().getId());
 
-        return sendPaymentData(data);
+        PaymentPayload paymentPayload = PaymentPayload.builder()
+                .type(history.getType())
+                .id(Id.convert(history.getId()))
+                .installment(history.getInstallment())
+                .amount(history.getAmount())
+                .vat(history.getVat())
+                .originId(Id.convert(history.getBalance().getId()))
+                .encryptedCard(history.getCard())
+                .build();
+        modelMapper.map(card, paymentPayload);
+
+        return sendPaymentPayload(paymentPayload);
     }
 
     private long calculateVat(long amount) {
@@ -130,10 +143,11 @@ public class PaymentService {
         return paymentResponse;
     }
 
-    private Sent sendPaymentData(SentData data) {
+    private Sent sendPaymentPayload(PaymentPayload paymentPayload) {
+        log.debug("paymentPayload: {}", paymentPayload);
         Sent sent = Sent.builder()
-                .id(data.getId())
-                .data(data.toString())
+                .id(Id.convert(paymentPayload.getId()))
+                .data(paymentPayload.serialize())
                 .build();
         sentRepository.save(sent);
         return sent;
