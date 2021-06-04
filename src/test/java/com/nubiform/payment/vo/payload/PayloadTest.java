@@ -2,24 +2,30 @@ package com.nubiform.payment.vo.payload;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PayloadTest {
 
     @Test
     public void test() {
-        System.out.println(PayloadSerializer.serializer(new TestPayload()));
+        String payload = Optional.ofNullable(new TestPayload())
+                .map(TestPayload::serialize)
+                .get();
 
-        assertTrue(true);
+        assertEquals("  25field2    field1    00030", payload);
     }
 
+    private class TestPayload implements PayloadSerializable {
 
-    class TestPayload {
+        @PayloadField(formatter = PayloadFormatter.STRING, order = 1, length = 10)
+        String field1 = "field1";
 
-        @PayloadField(formatter = PayloadFormatter.STRING, start = 0, length = 5)
-        String field1 = "test";
+        @PayloadField(formatter = PayloadFormatter.STRING, order = 0, length = 10)
+        String field2 = "field2";
 
-        @PayloadField(formatter = PayloadFormatter.STRING, start = 5, length = 5)
-        String field2 = "test";
+        @PayloadField(formatter = PayloadFormatter.NUMBER_0, order = 2, length = 5)
+        int field3 = 30;
     }
 }
