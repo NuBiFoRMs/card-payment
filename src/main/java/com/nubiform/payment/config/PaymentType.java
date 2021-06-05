@@ -1,7 +1,6 @@
 package com.nubiform.payment.config;
 
-public final class PaymentType {
+public enum PaymentType {
 
-    public static final String PAYMENT = "PAYMENT";
-    public static final String CANCEL = "CANCEL";
+    PAYMENT, CANCEL;
 }

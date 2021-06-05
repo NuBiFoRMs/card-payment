@@ -1,5 +1,6 @@
 package com.nubiform.payment.domain;
 
+import com.nubiform.payment.config.PaymentType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class History extends BaseTimeEntity {
     private Long id;
 
     @Column(length = 30)
-    private String type;
+    private PaymentType type;
 
     @Column(length = 300)
     private String card;

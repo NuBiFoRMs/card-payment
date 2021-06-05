@@ -1,5 +1,6 @@
 package com.nubiform.payment.vo;
 
+import com.nubiform.payment.config.PaymentType;
 import com.nubiform.payment.vo.payload.PayloadField;
 import com.nubiform.payment.vo.payload.PayloadFormatter;
 import com.nubiform.payment.vo.payload.PayloadSerializable;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class PaymentPayload implements PayloadSerializable {
 
     @PayloadField(order = 0, length = 10)
-    private String type;
+    private PaymentType type;
 
     @PayloadField(order = 10, length = 20)
     private String id;
