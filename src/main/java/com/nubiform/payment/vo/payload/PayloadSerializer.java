@@ -1,18 +1,27 @@
 package com.nubiform.payment.vo.payload;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-public class PayloadSerializer {
+public class PayloadSerializer extends JsonSerializer<PayloadSerializable> {
 
     public static final int LENGTH_SIZE = 4;
     private static final int DEFAULT_PAYLOAD_SIZE = 500;
 
-    public static String serializer(PayloadSerializable payloadObject) {
+    @Override
+    public void serialize(PayloadSerializable value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeString(serialize(value));
+    }
+
+    public static String serialize(PayloadSerializable payloadObject) {
         StringBuilder payloadBuilder = new StringBuilder(DEFAULT_PAYLOAD_SIZE);
 
         Arrays.stream(FieldUtils.getAllFields(payloadObject.getClass()))
