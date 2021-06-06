@@ -1,11 +1,9 @@
 package com.nubiform.payment.vo;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nubiform.payment.config.PaymentType;
 import com.nubiform.payment.vo.payload.PayloadField;
 import com.nubiform.payment.vo.payload.PayloadFormatter;
 import com.nubiform.payment.vo.payload.PayloadSerializable;
-import com.nubiform.payment.vo.payload.PayloadSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-@JsonSerialize(using = PayloadSerializer.class)
 public class PaymentPayload implements PayloadSerializable {
 
     @PayloadField(order = 0, length = 10)
