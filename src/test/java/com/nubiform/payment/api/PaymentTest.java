@@ -49,7 +49,7 @@ class PaymentTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(1000L);
 
-        Long id = paymentService.submit(submitRequest).getId();
+        Long id = Id.convert(paymentService.submit(submitRequest).getId());
 
         paymentRequest = new PaymentRequest();
         paymentRequest.setId(Id.convert(id));

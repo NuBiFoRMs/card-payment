@@ -34,23 +34,23 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<PayloadResponse> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
         log.debug("postPayment: {}", submitRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             throw new ValidationException();
         }
-        return ResponseEntity.ok(modelMapper.map(paymentService.submit(submitRequest), Response.class));
+        return ResponseEntity.ok(paymentService.submit(submitRequest));
     }
 
     @DeleteMapping
-    public ResponseEntity<Response> delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<PayloadResponse> delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
         log.debug("delPayment: {}", cancelRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             throw new ValidationException();
         }
-        return ResponseEntity.ok(modelMapper.map(paymentService.cancel(cancelRequest), Response.class));
+        return ResponseEntity.ok(paymentService.cancel(cancelRequest));
     }
 
     @GetMapping
