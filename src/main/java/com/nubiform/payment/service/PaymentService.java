@@ -141,16 +141,20 @@ public class PaymentService {
         History history = historyRepository.findById(paymentRequest.getLongId())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
-        PaymentResponse paymentResponse = modelMapper.map(history, PaymentResponse.class);
+        Payment payment = modelMapper.map(history, Payment.class);
         Card card = new Card(encryption.decrypt(history.getCard()));
-        modelMapper.map(card, paymentResponse);
+        modelMapper.map(card, payment);
 
         Balance balance = history.getBalance();
-        paymentResponse.setOriginId(balance.getId());
-        paymentResponse.setTotalAmount(balance.getAmount());
-        paymentResponse.setTotalVat(balance.getVat());
-        paymentResponse.setRemainAmount(balance.getRemainAmount());
-        paymentResponse.setRemainVat(balance.getRemainVat());
+        payment.setOriginId(balance.getId());
+        payment.setTotalAmount(balance.getAmount());
+        payment.setTotalVat(balance.getVat());
+        payment.setRemainAmount(balance.getRemainAmount());
+        payment.setRemainVat(balance.getRemainVat());
+
+        PaymentResponse<Payment> paymentResponse = new PaymentResponse<>();
+        paymentResponse.setId(balance.getId());
+        paymentResponse.setData(payment);
 
         return paymentResponse;
     }
