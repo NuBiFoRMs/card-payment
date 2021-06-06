@@ -5,8 +5,8 @@ import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.Id;
+import com.nubiform.payment.vo.Payment;
 import com.nubiform.payment.vo.PaymentRequest;
-import com.nubiform.payment.vo.PaymentResponse;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class PaymentTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(1000L);
 
-        Long id = paymentService.submit(submitRequest).getId();
+        Long id = Id.convert(paymentService.submit(submitRequest).getId());
 
         paymentRequest = new PaymentRequest();
         paymentRequest.setId(Id.convert(id));
@@ -62,7 +62,7 @@ class PaymentTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.card").value(submitRequest.getCard().replaceAll(PaymentResponse.MASK_REGEX, PaymentResponse.MASK)))
-                .andExpect(jsonPath("$.totalAmount").value(is(submitRequest.getAmount()), Long.class));
+                .andExpect(jsonPath("$.data.card").value(submitRequest.getCard().replaceAll(Payment.MASK_REGEX, Payment.MASK)))
+                .andExpect(jsonPath("$.data.totalAmount").value(is(submitRequest.getAmount()), Long.class));
     }
 }
