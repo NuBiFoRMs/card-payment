@@ -82,4 +82,18 @@ class SubmitTest {
 
         assertNotNull(sent);
     }
+
+    @Test
+    public void postPaymentWrongAmountVat() throws Exception {
+        submitRequest.setAmount(10000L);
+        submitRequest.setVat(10001L);
+
+        mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(submitRequest)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists());
+    }
 }

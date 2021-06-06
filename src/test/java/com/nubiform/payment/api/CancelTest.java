@@ -61,7 +61,7 @@ class CancelTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(10000L);
 
-        Long id = paymentService.submit(submitRequest).getId();
+        Long id = Id.convert(paymentService.submit(submitRequest).getId());
 
         cancelRequest = new CancelRequest();
         cancelRequest.setId(Id.convert(id));
@@ -87,6 +87,19 @@ class CancelTest {
     @Test
     public void delPaymentFailure() throws Exception {
         cancelRequest.setAmount(1000000L);
+
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cancelRequest)))
+                .andDo(print())
+                .andExpect(jsonPath("$.code").exists())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    public void delPaymentWrongAmountVat() throws Exception {
+        cancelRequest.setAmount(10000L);
+        cancelRequest.setVat(10001L);
 
         mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)

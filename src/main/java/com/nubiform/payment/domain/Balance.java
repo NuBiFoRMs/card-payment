@@ -21,7 +21,7 @@ public class Balance extends BaseTimeEntity {
     private Long id;
 
     @Column(length = 30)
-    private String status;
+    private PaymentType status;
 
     @Column(length = 300)
     private String card;

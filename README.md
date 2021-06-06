@@ -1,7 +1,8 @@
 # 결제요청을 받아 카드사와 통신하는 인터페이스를 제공하는 결제시스템
 
 ![Tag](https://img.shields.io/github/v/tag/nubiforms/card-payment)
-![Travis](https://img.shields.io/travis/com/nubiforms/card-payment)
+[![Actions Status](https://github.com/NuBiFoRMs/card-payment/workflows/build/badge.svg)](https://github.com/NuBiFoRMs/card-payment/actions)
+[![codecov](https://codecov.io/gh/NuBiFoRMs/card-payment/branch/develop/graph/badge.svg?token=CUPAW61JYO)](https://codecov.io/gh/NuBiFoRMs/card-payment)
 
 ![Languages Count](https://img.shields.io/github/languages/count/nubiforms/card-payment)
 ![Languages Top](https://img.shields.io/github/languages/top/nubiforms/card-payment)
