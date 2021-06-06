@@ -31,7 +31,7 @@ class PayloadResponseTest {
                 .extraField("10")
                 .build();
 
-        PayloadResponse payloadResponse = new PayloadResponse();
+        PaymentResponse<PaymentPayload> payloadResponse = new PaymentResponse<>();
         payloadResponse.setId(10L);
         payloadResponse.setData(paymentPayload);
 

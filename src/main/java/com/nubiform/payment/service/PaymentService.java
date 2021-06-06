@@ -35,7 +35,7 @@ public class PaymentService {
     private final Encryption encryption;
     private final ModelMapper modelMapper;
 
-    public PayloadResponse submit(SubmitRequest submitRequest) throws Exception {
+    public PaymentResponse<PaymentPayload> submit(SubmitRequest submitRequest) throws Exception {
         if (submitRequest.getVat() == null) submitRequest.setVat(calculateVat(submitRequest.getAmount()));
         else if (submitRequest.getVat() > submitRequest.getAmount())
             throw new PaymentException(ErrorCode.VatIsNotGreaterThanAmount);
@@ -76,14 +76,14 @@ public class PaymentService {
 
         sendPaymentPayload(paymentPayload);
 
-        PayloadResponse payloadResponse = new PayloadResponse();
-        payloadResponse.setId(history.getId());
-        payloadResponse.setData(paymentPayload);
+        PaymentResponse<PaymentPayload> paymentResponse = new PaymentResponse<>();
+        paymentResponse.setId(history.getId());
+        paymentResponse.setData(paymentPayload);
 
-        return payloadResponse;
+        return paymentResponse;
     }
 
-    public PayloadResponse cancel(CancelRequest cancelRequest) throws Exception {
+    public PaymentResponse<PaymentPayload> cancel(CancelRequest cancelRequest) throws Exception {
         Balance balance = balanceRepository.findById(cancelRequest.getLongId())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
@@ -126,11 +126,11 @@ public class PaymentService {
 
         sendPaymentPayload(paymentPayload);
 
-        PayloadResponse payloadResponse = new PayloadResponse();
-        payloadResponse.setId(history.getId());
-        payloadResponse.setData(paymentPayload);
+        PaymentResponse<PaymentPayload> paymentResponse = new PaymentResponse<>();
+        paymentResponse.setId(history.getId());
+        paymentResponse.setData(paymentPayload);
 
-        return payloadResponse;
+        return paymentResponse;
     }
 
     private long calculateVat(long amount) {

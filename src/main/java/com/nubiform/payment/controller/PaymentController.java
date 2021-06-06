@@ -34,7 +34,7 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<PayloadResponse> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<PaymentResponse<PaymentPayload>> postPayment(@Valid @RequestBody SubmitRequest submitRequest, BindingResult bindingResult) throws Exception {
         log.debug("postPayment: {}", submitRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
@@ -44,7 +44,7 @@ public class PaymentController {
     }
 
     @DeleteMapping
-    public ResponseEntity<PayloadResponse> delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<PaymentResponse<PaymentPayload>> delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
         log.debug("delPayment: {}", cancelRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
@@ -54,7 +54,7 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ResponseEntity<PaymentResponse> getPayment(@Valid PaymentRequest paymentRequest, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<PaymentResponse<Payment>> getPayment(@Valid PaymentRequest paymentRequest, BindingResult bindingResult) throws Exception {
         log.debug("getPayment: {}", paymentRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
