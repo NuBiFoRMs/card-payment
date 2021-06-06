@@ -35,10 +35,8 @@ class PayloadResponseTest {
         payloadResponse.setId(10L);
         payloadResponse.setData(paymentPayload);
 
-        String payload = objectMapper.writeValueAsString(paymentPayload);
         String response = objectMapper.writeValueAsString(payloadResponse);
 
-        assertEquals("\" 446PAYMENT   1                   2                   034   5           600000000078                   9                                                                                                                                                                                                                                                                                                           10                                             \"", payload);
         assertEquals("{\"data\":\" 446PAYMENT   1                   2                   034   5           600000000078                   9                                                                                                                                                                                                                                                                                                           10                                             \",\"id\":\"N0000000000000000010\"}", response);
     }
 }
