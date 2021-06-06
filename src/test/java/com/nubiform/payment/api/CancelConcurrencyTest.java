@@ -71,7 +71,7 @@ class CancelConcurrencyTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(TOTAL_AMOUNT);
 
-        Long id = paymentService.submit(submitRequest).getId();
+        Long id = Id.convert(paymentService.submit(submitRequest).getId());
 
         cancelRequest = new CancelRequest();
         cancelRequest.setId(Id.convert(id));

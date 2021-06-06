@@ -1,7 +1,11 @@
 package com.nubiform.payment.config;
 
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.nubiform.payment.security.AES256;
 import com.nubiform.payment.security.Encryption;
+import com.nubiform.payment.vo.payload.PayloadSerializable;
+import com.nubiform.payment.vo.payload.PayloadSerializer;
 import lombok.RequiredArgsConstructor;
 import org.h2.tools.Server;
 import org.modelmapper.ModelMapper;
@@ -30,6 +34,13 @@ public class AppConfig {
                 .setSourceNameTokenizer(NameTokenizers.UNDERSCORE)
                 .setDestinationNameTokenizer(NameTokenizers.UNDERSCORE);
         return modelMapper;
+    }
+
+    @Bean
+    public Module payloadModule() {
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(PayloadSerializable.class, new PayloadSerializer());
+        return simpleModule;
     }
 
     @Profile("dev")
