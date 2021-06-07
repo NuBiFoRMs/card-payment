@@ -1,6 +1,6 @@
 # 결제요청을 받아 카드사와 통신하는 인터페이스를 제공하는 결제시스템
 
-![Tag](https://img.shields.io/github/v/tag/nubiforms/card-payment)
+[![Tag](https://img.shields.io/github/v/tag/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/releases)
 [![Actions Status](https://github.com/NuBiFoRMs/card-payment/workflows/build/badge.svg)](https://github.com/NuBiFoRMs/card-payment/actions)
 [![codecov](https://codecov.io/gh/NuBiFoRMs/card-payment/branch/develop/graph/badge.svg?token=CUPAW61JYO)](https://codecov.io/gh/NuBiFoRMs/card-payment)
 
@@ -60,6 +60,14 @@ git clone https://github.com/NuBiFoRMs/card-payment.git
 cd card-payment
 gradle build
 java -jar build/libs/card-payment-1.0.0.jar
+```
+
+- Docker Run(Docker Hub Image)
+
+    - https://hub.docker.com/r/nubiform/card-payment
+
+```
+docker run -d -p 8080:8080 nubiform/card-payment
 ```
 
 - Swagger UI
