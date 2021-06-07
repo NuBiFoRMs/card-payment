@@ -6,12 +6,12 @@
 
 ![Languages Count](https://img.shields.io/github/languages/count/nubiforms/card-payment)
 ![Languages Top](https://img.shields.io/github/languages/top/nubiforms/card-payment)
-![Issues](https://img.shields.io/github/issues/nubiforms/card-payment)
-![Issues Closed](https://img.shields.io/github/issues-closed/nubiforms/card-payment)
-![Issues PR](https://img.shields.io/github/issues-pr/nubiforms/card-payment)
-![Issues PR Closed](https://img.shields.io/github/issues-pr-closed/nubiforms/card-payment)
-![Commit Activity](https://img.shields.io/github/commit-activity/w/nubiforms/card-payment)
-![Last Commit](https://img.shields.io/github/last-commit/nubiforms/card-payment)
+[![Issues](https://img.shields.io/github/issues/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/issues)
+[![Issues Closed](https://img.shields.io/github/issues-closed/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/issues?q=is%3Aissue+is%3Aclosed)
+[![Issues PR](https://img.shields.io/github/issues-pr/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/pulls)
+[![Issues PR Closed](https://img.shields.io/github/issues-pr-closed/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/pulls?q=is%3Apr+is%3Aclosed)
+[![Commit Activity](https://img.shields.io/github/commit-activity/w/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/commits)
+[![Last Commit](https://img.shields.io/github/last-commit/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/commits)
 
 ## 개발 프레임워크
 
