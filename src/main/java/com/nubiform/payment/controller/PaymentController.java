@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @RequestMapping(PaymentController.API_V1_PAYMENT_URI)
 public class PaymentController {
 
-    public static final String API_V1_PAYMENT_URI = "/api/v1/payment";
+    public static final String API_V1_PAYMENT_URI = "/api/v1/payments";
 
     private final SubmitValidator submitValidator;
 
