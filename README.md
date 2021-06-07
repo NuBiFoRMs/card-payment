@@ -1,17 +1,17 @@
 # 결제요청을 받아 카드사와 통신하는 인터페이스를 제공하는 결제시스템
 
-![Tag](https://img.shields.io/github/v/tag/nubiforms/card-payment)
+[![Tag](https://img.shields.io/github/v/tag/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/releases)
 [![Actions Status](https://github.com/NuBiFoRMs/card-payment/workflows/build/badge.svg)](https://github.com/NuBiFoRMs/card-payment/actions)
 [![codecov](https://codecov.io/gh/NuBiFoRMs/card-payment/branch/develop/graph/badge.svg?token=CUPAW61JYO)](https://codecov.io/gh/NuBiFoRMs/card-payment)
 
 ![Languages Count](https://img.shields.io/github/languages/count/nubiforms/card-payment)
 ![Languages Top](https://img.shields.io/github/languages/top/nubiforms/card-payment)
-![Issues](https://img.shields.io/github/issues/nubiforms/card-payment)
-![Issues Closed](https://img.shields.io/github/issues-closed/nubiforms/card-payment)
-![Issues PR](https://img.shields.io/github/issues-pr/nubiforms/card-payment)
-![Issues PR Closed](https://img.shields.io/github/issues-pr-closed/nubiforms/card-payment)
-![Commit Activity](https://img.shields.io/github/commit-activity/w/nubiforms/card-payment)
-![Last Commit](https://img.shields.io/github/last-commit/nubiforms/card-payment)
+[![Issues](https://img.shields.io/github/issues/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/issues)
+[![Issues Closed](https://img.shields.io/github/issues-closed/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/issues?q=is%3Aissue+is%3Aclosed)
+[![Issues PR](https://img.shields.io/github/issues-pr/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/pulls)
+[![Issues PR Closed](https://img.shields.io/github/issues-pr-closed/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/pulls?q=is%3Apr+is%3Aclosed)
+[![Commit Activity](https://img.shields.io/github/commit-activity/w/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/commits)
+[![Last Commit](https://img.shields.io/github/last-commit/nubiforms/card-payment)](https://github.com/NuBiFoRMs/card-payment/commits)
 
 ## 개발 프레임워크
 
@@ -59,7 +59,15 @@
 git clone https://github.com/NuBiFoRMs/card-payment.git
 cd card-payment
 gradle build
-java -jar build/libs/card-payment-1.0.0.jar
+java -jar build/libs/card-payment-1.0.2.jar
+```
+
+- Docker Run(Docker Hub Image)
+
+    - https://hub.docker.com/r/nubiform/card-payment
+
+```
+docker run -d -p 8080:8080 nubiform/card-payment
 ```
 
 - Swagger UI
