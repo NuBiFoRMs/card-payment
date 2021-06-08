@@ -10,8 +10,6 @@ public class Payment {
     public static final String MASK_REGEX = "(?<=.{6}).(?=.{3})";
     public static final String MASK = "*";
 
-    private PaymentId id;
-
     private String type;
 
     private String card;
