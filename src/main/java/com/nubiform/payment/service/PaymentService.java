@@ -143,7 +143,6 @@ public class PaymentService {
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         Payment payment = modelMapper.map(history, Payment.class);
-        payment.setId(PaymentId.of(history.getId()));
         Card card = new Card(encryption.decrypt(history.getCard()));
         modelMapper.map(card, payment);
 
