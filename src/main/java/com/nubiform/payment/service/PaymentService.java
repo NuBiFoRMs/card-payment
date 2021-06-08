@@ -78,7 +78,7 @@ public class PaymentService {
         sendPaymentPayload(paymentPayload);
 
         PaymentResponse<PaymentPayload> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(history.getId());
+        paymentResponse.setId(PaymentId.of(history.getId()));
         paymentResponse.setData(paymentPayload);
 
         return paymentResponse;
@@ -128,7 +128,7 @@ public class PaymentService {
         sendPaymentPayload(paymentPayload);
 
         PaymentResponse<PaymentPayload> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(history.getId());
+        paymentResponse.setId(PaymentId.of(history.getId()));
         paymentResponse.setData(paymentPayload);
 
         return paymentResponse;
@@ -154,7 +154,7 @@ public class PaymentService {
         payment.setRemainVat(balance.getRemainVat());
 
         PaymentResponse<Payment> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(balance.getId());
+        paymentResponse.setId(PaymentId.of(balance.getId()));
         paymentResponse.setData(payment);
 
         return paymentResponse;

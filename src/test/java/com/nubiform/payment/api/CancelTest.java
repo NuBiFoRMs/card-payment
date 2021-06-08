@@ -62,7 +62,7 @@ class CancelTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(10000L);
 
-        paymentId = PaymentId.of(paymentService.submit(submitRequest).getId());
+        paymentId = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
         cancelRequest.setAmount(10000L);

@@ -72,7 +72,7 @@ class CancelConcurrencyTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(TOTAL_AMOUNT);
 
-        paymentId = PaymentId.of(paymentService.submit(submitRequest).getId());
+        paymentId = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
     }
