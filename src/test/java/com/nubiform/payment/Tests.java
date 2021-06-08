@@ -1,6 +1,7 @@
 package com.nubiform.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.domain.Balance;
 import com.nubiform.payment.repository.BalanceRepository;
 import com.nubiform.payment.vo.CancelRequest;
@@ -128,7 +129,7 @@ class Tests {
     }
 
     private String submit(SubmitRequest submitRequest, Integer expectedErrorCode, Long expectedAmount, Long expectedVat) throws Exception {
-        String result = mockMvc.perform(post("/api/v1/payment")
+        String result = mockMvc.perform(post(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(submitRequest)))
                 .andReturn()
@@ -147,7 +148,7 @@ class Tests {
     }
 
     private String cancel(CancelRequest cancelRequest, Integer expectedErrorCode, Long expectedAmount, Long expectedVat) throws Exception {
-        String result = mockMvc.perform(delete("/api/v1/payment")
+        String result = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andReturn()
