@@ -1,5 +1,7 @@
 package com.nubiform.payment.vo;
 
+import com.nubiform.payment.vo.id.PaymentId;
+
 public class TestResponse {
 
     private String id;
@@ -9,7 +11,7 @@ public class TestResponse {
     }
 
     public Long getLongId() {
-        return Id.convert(this.id);
+        return PaymentId.convert(this.id);
     }
 
     public String getStringId() {

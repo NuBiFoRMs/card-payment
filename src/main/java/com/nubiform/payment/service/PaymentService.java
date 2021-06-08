@@ -67,7 +67,7 @@ public class PaymentService {
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
                 .type(history.getType())
-                .id(Id.convert(history.getId()))
+                .id(PaymentId.convert(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
                 .vat(history.getVat())
@@ -116,11 +116,11 @@ public class PaymentService {
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
                 .type(history.getType())
-                .id(Id.convert(history.getId()))
+                .id(PaymentId.convert(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
                 .vat(history.getVat())
-                .originId(Id.convert(history.getBalance().getId()))
+                .originId(PaymentId.convert(history.getBalance().getId()))
                 .encryptedCard(history.getCard())
                 .build();
         modelMapper.map(card, paymentPayload);
@@ -143,18 +143,19 @@ public class PaymentService {
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         Payment payment = modelMapper.map(history, Payment.class);
+        payment.setId(PaymentId.of(history.getId()));
         Card card = new Card(encryption.decrypt(history.getCard()));
         modelMapper.map(card, payment);
 
         Balance balance = history.getBalance();
-        payment.setOriginId(balance.getId());
+        payment.setOriginId(PaymentId.of(balance.getId()));
         payment.setTotalAmount(balance.getAmount());
         payment.setTotalVat(balance.getVat());
         payment.setRemainAmount(balance.getRemainAmount());
         payment.setRemainVat(balance.getRemainVat());
 
         PaymentResponse<Payment> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(PaymentId.of(balance.getId()));
+        paymentResponse.setId(PaymentId.of(history.getId()));
         paymentResponse.setData(payment);
 
         return paymentResponse;
@@ -163,7 +164,7 @@ public class PaymentService {
     private Sent sendPaymentPayload(PaymentPayload paymentPayload) {
         log.debug("paymentPayload: {}", paymentPayload);
         Sent sent = Sent.builder()
-                .id(Id.convert(paymentPayload.getId()))
+                .id(PaymentId.convert(paymentPayload.getId()))
                 .data(paymentPayload.serialize())
                 .build();
         sentRepository.save(sent);
