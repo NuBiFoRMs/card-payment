@@ -30,4 +30,14 @@ class PaymentIdTest {
     public void exceptionTest() {
         assertThrows(ValidationException.class, () -> PaymentId.of("test"));
     }
+
+    @Test
+    public void exceptionMinusTest() {
+        assertThrows(ValidationException.class, () -> PaymentId.of(-1));
+    }
+
+    @Test
+    public void exceptionConvertTest() {
+        assertThrows(ValidationException.class, () -> PaymentId.convert(-1));
+    }
 }
