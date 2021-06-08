@@ -11,7 +11,7 @@ public class PaymentId {
 
     private final long id;
 
-    public PaymentId(Long id) {
+    public PaymentId(long id) {
         this.id = id;
     }
 
