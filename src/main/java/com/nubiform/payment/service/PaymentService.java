@@ -84,8 +84,8 @@ public class PaymentService {
         return paymentResponse;
     }
 
-    public PaymentResponse<PaymentPayload> cancel(CancelRequest cancelRequest) throws Exception {
-        Balance balance = balanceRepository.findById(cancelRequest.getLongId())
+    public PaymentResponse<PaymentPayload> cancel(PaymentId paymentId, CancelRequest cancelRequest) throws Exception {
+        Balance balance = balanceRepository.findById(paymentId.value())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         if (balance.isCanceled()) throw new PaymentException(ErrorCode.PaymentIsAlreadyCanceled);

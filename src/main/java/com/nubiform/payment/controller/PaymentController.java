@@ -48,14 +48,15 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.submit(submitRequest));
     }
 
-    @DeleteMapping
-    public ResponseEntity<PaymentResponse<PaymentPayload>> delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
-        log.debug("delPayment: {}", cancelRequest);
+    @DeleteMapping(PATH_VARIABLE_ID)
+    public ResponseEntity<PaymentResponse<PaymentPayload>> delPayment(@Parameter(schema = @Schema(type = "string")) @PathVariable("id") PaymentId paymentId,
+                                                                      @Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
+        log.debug("delPayment: {} {}", paymentId, cancelRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             throw new ValidationException();
         }
-        return ResponseEntity.ok(paymentService.cancel(cancelRequest));
+        return ResponseEntity.ok(paymentService.cancel(paymentId, cancelRequest));
     }
 
     @GetMapping(PATH_VARIABLE_ID)
