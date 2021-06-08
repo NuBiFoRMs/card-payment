@@ -24,7 +24,7 @@ public class PaymentId {
     }
 
     public static String convert(long id) {
-        if (id < 0) throw new ValidationException();
+        if (id <= 0) throw new ValidationException();
         return PRE_FIX + StringUtils.leftPad(String.valueOf(id), 19, "0");
     }
 
