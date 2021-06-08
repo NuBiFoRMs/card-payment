@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.nubiform.payment.security.AES256;
 import com.nubiform.payment.security.Encryption;
+import com.nubiform.payment.vo.id.PaymentId;
+import com.nubiform.payment.vo.id.PaymentIdDeserializer;
+import com.nubiform.payment.vo.id.PaymentIdSerializer;
 import com.nubiform.payment.vo.payload.PayloadSerializable;
 import com.nubiform.payment.vo.payload.PayloadSerializer;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,8 @@ public class AppConfig {
     public Module payloadModule() {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(PayloadSerializable.class, new PayloadSerializer());
+        simpleModule.addSerializer(PaymentId.class, new PaymentIdSerializer());
+        simpleModule.addDeserializer(PaymentId.class, new PaymentIdDeserializer());
         return simpleModule;
     }
 
