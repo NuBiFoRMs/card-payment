@@ -70,9 +70,9 @@ class SubmitTest {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
         TestResponse response = objectMapper.readValue(responseBody, TestResponse.class);
-        Balance balance = balanceRepository.findById(response.getLongId()).orElse(null);
-        History history = historyRepository.findById(response.getLongId()).orElse(null);
-        Sent sent = sentRepository.findById(response.getLongId()).orElse(null);
+        Balance balance = balanceRepository.findById(response.getId().value()).orElse(null);
+        History history = historyRepository.findById(response.getId().value()).orElse(null);
+        Sent sent = sentRepository.findById(response.getId().value()).orElse(null);
 
         assertNotNull(balance);
         assertEquals(submitRequest.getAmount(), balance.getRemainAmount());
