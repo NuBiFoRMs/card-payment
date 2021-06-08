@@ -138,7 +138,7 @@ public class PaymentService {
         return Math.round(amount / VAT_RATE);
     }
 
-    public PaymentResponse payment(PaymentId paymentId) throws Exception {
+    public PaymentResponse<Payment> payment(PaymentId paymentId) throws Exception {
         History history = historyRepository.findById(paymentId.value())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
