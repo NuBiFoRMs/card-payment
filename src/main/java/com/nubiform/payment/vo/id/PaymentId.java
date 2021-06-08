@@ -16,6 +16,7 @@ public class PaymentId {
     }
 
     public static PaymentId of(long id) {
+        if (id <= 0) throw new ValidationException();
         return new PaymentId(id);
     }
 
@@ -23,8 +24,8 @@ public class PaymentId {
         return new PaymentId(convert(id));
     }
 
-    public static String convert(Long id) {
-        if (id == null || id < 0) return StringUtils.leftPad("", 20, " ");
+    public static String convert(long id) {
+        if (id <= 0) throw new ValidationException();
         return PRE_FIX + StringUtils.leftPad(String.valueOf(id), 19, "0");
     }
 
