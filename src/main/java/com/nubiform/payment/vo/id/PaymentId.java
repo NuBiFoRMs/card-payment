@@ -16,6 +16,7 @@ public class PaymentId {
     }
 
     public static PaymentId of(long id) {
+        if (id <= 0) throw new ValidationException();
         return new PaymentId(id);
     }
 
