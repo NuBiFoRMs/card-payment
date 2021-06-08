@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -30,8 +29,6 @@ public class PaymentController {
     private final SubmitValidator submitValidator;
 
     private final PaymentService paymentService;
-
-    private final ModelMapper modelMapper;
 
     @InitBinder("submitRequest")
     public void submitInitBinder(WebDataBinder webDataBinder) {
