@@ -8,6 +8,7 @@ import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.ErrorResponse;
 import com.nubiform.payment.vo.SubmitRequest;
 import com.nubiform.payment.vo.TestResponse;
+import com.nubiform.payment.vo.id.PaymentId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,25 +51,26 @@ class Tests {
         String submitResult = submit(submitRequest, 11000L, 1000L);
 
         String id = objectMapper.readValue(submitResult, TestResponse.class).getStringId();
+        PaymentId paymentId = PaymentId.of(id);
 
-        cancel(CancelRequest.builder().id(id).amount(1100L).vat(100L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(1100L).vat(100L).build(),
                 9900L, 900L);
 
-        cancel(CancelRequest.builder().id(id).amount(3300L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(3300L).build(),
                 6600L, 600L);
 
-        cancel(CancelRequest.builder().id(id).amount(7000L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(7000L).build(),
                 1001,
                 6600L, 600L);
 
-        cancel(CancelRequest.builder().id(id).amount(6600L).vat(700L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(6600L).vat(700L).build(),
                 1001,
                 6600L, 600L);
 
-        cancel(CancelRequest.builder().id(id).amount(6600L).vat(600L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(6600L).vat(600L).build(),
                 0L, 0L);
 
-        cancel(CancelRequest.builder().id(id).amount(100L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(100L).build(),
                 1003,
                 0L, 0L);
     }
@@ -85,17 +87,18 @@ class Tests {
         submitRequest.setVat(909L);
 
         String submitResult = submit(submitRequest, 20000L, 909L);
-
         String id = objectMapper.readValue(submitResult, TestResponse.class).getStringId();
 
-        cancel(CancelRequest.builder().id(id).amount(10000L).vat(0L).build(),
+        PaymentId paymentId = PaymentId.of(id);
+
+        cancel(paymentId, CancelRequest.builder().amount(10000L).vat(0L).build(),
                 10000L, 909L);
 
-        cancel(CancelRequest.builder().id(id).amount(10000L).vat(0L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(10000L).vat(0L).build(),
                 1001,
                 10000L, 909L);
 
-        cancel(CancelRequest.builder().id(id).amount(10000L).vat(909L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(10000L).vat(909L).build(),
                 0L, 0L);
     }
 
@@ -110,17 +113,18 @@ class Tests {
         submitRequest.setAmount(20000L);
 
         String submitResult = submit(submitRequest, 20000L, 1818L);
-
         String id = objectMapper.readValue(submitResult, TestResponse.class).getStringId();
 
-        cancel(CancelRequest.builder().id(id).amount(10000L).vat(1000L).build(),
+        PaymentId paymentId = PaymentId.of(id);
+
+        cancel(paymentId, CancelRequest.builder().amount(10000L).vat(1000L).build(),
                 10000L, 818L);
 
-        cancel(CancelRequest.builder().id(id).amount(10000L).vat(909L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(10000L).vat(909L).build(),
                 1001,
                 10000L, 818L);
 
-        cancel(CancelRequest.builder().id(id).amount(10000L).vat(818L).build(),
+        cancel(paymentId, CancelRequest.builder().amount(10000L).vat(818L).build(),
                 0L, 0L);
     }
 
@@ -143,19 +147,19 @@ class Tests {
         return result;
     }
 
-    private String cancel(CancelRequest cancelRequest, Long expectedAmount, Long expectedVat) throws Exception {
-        return cancel(cancelRequest, null, expectedAmount, expectedVat);
+    private String cancel(PaymentId paymentId, CancelRequest cancelRequest, Long expectedAmount, Long expectedVat) throws Exception {
+        return cancel(paymentId, cancelRequest, null, expectedAmount, expectedVat);
     }
 
-    private String cancel(CancelRequest cancelRequest, Integer expectedErrorCode, Long expectedAmount, Long expectedVat) throws Exception {
-        String result = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+    private String cancel(PaymentId paymentId, CancelRequest cancelRequest, Integer expectedErrorCode, Long expectedAmount, Long expectedVat) throws Exception {
+        String result = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI_WITH_ID, paymentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        assertResponse(expectedErrorCode, cancelRequest.getLongId(), expectedAmount, expectedVat, result);
+        assertResponse(expectedErrorCode, paymentId.value(), expectedAmount, expectedVat, result);
 
         return result;
     }

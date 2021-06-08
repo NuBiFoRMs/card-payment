@@ -1,6 +1,7 @@
 package com.nubiform.payment.vo;
 
 import com.nubiform.payment.config.PaymentType;
+import com.nubiform.payment.vo.id.PaymentId;
 import com.nubiform.payment.vo.payload.PayloadField;
 import com.nubiform.payment.vo.payload.PayloadFormatter;
 import com.nubiform.payment.vo.payload.PayloadSerializable;
@@ -19,7 +20,7 @@ public class PaymentPayload implements PayloadSerializable {
     private PaymentType type;
 
     @PayloadField(order = 10, length = 20)
-    private String id;
+    private PaymentId id;
 
     @PayloadField(order = 30, length = 20)
     private String card;
@@ -40,7 +41,7 @@ public class PaymentPayload implements PayloadSerializable {
     private Long vat;
 
     @PayloadField(order = 69, length = 20)
-    private String originId;
+    private PaymentId originId;
 
     @PayloadField(order = 89, length = 300)
     private String encryptedCard;

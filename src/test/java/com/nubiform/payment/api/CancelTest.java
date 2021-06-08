@@ -8,9 +8,9 @@ import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
-import com.nubiform.payment.vo.Id;
 import com.nubiform.payment.vo.SubmitRequest;
 import com.nubiform.payment.vo.TestResponse;
+import com.nubiform.payment.vo.id.PaymentId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +50,7 @@ class CancelTest {
     ObjectMapper objectMapper;
 
     SubmitRequest submitRequest;
+    PaymentId paymentId;
     CancelRequest cancelRequest;
 
     @BeforeEach
@@ -61,17 +62,16 @@ class CancelTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(10000L);
 
-        Long id = Id.convert(paymentService.submit(submitRequest).getId());
+        paymentId = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId(Id.convert(id));
         cancelRequest.setAmount(10000L);
     }
 
     @Test
     @Transactional
     public void delPayment() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+        MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI_WITH_ID, paymentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
@@ -88,7 +88,7 @@ class CancelTest {
     public void delPaymentFailure() throws Exception {
         cancelRequest.setAmount(1000000L);
 
-        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI_WITH_ID, paymentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())
@@ -101,7 +101,7 @@ class CancelTest {
         cancelRequest.setAmount(10000L);
         cancelRequest.setVat(10001L);
 
-        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+        mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI_WITH_ID, paymentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cancelRequest)))
                 .andDo(print())

@@ -48,7 +48,7 @@ class PaymentTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(1000L);
 
-        paymentId = PaymentId.of(paymentService.submit(submitRequest).getId());
+        paymentId = paymentService.submit(submitRequest).getId();
     }
 
     @Test

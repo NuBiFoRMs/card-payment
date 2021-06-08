@@ -67,7 +67,7 @@ public class PaymentService {
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
                 .type(history.getType())
-                .id(Id.convert(history.getId()))
+                .id(PaymentId.of(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
                 .vat(history.getVat())
@@ -78,14 +78,14 @@ public class PaymentService {
         sendPaymentPayload(paymentPayload);
 
         PaymentResponse<PaymentPayload> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(history.getId());
+        paymentResponse.setId(PaymentId.of(history.getId()));
         paymentResponse.setData(paymentPayload);
 
         return paymentResponse;
     }
 
-    public PaymentResponse<PaymentPayload> cancel(CancelRequest cancelRequest) throws Exception {
-        Balance balance = balanceRepository.findById(cancelRequest.getLongId())
+    public PaymentResponse<PaymentPayload> cancel(PaymentId paymentId, CancelRequest cancelRequest) throws Exception {
+        Balance balance = balanceRepository.findById(paymentId.value())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         if (balance.isCanceled()) throw new PaymentException(ErrorCode.PaymentIsAlreadyCanceled);
@@ -116,11 +116,11 @@ public class PaymentService {
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
                 .type(history.getType())
-                .id(Id.convert(history.getId()))
+                .id(PaymentId.of(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
                 .vat(history.getVat())
-                .originId(Id.convert(history.getBalance().getId()))
+                .originId(PaymentId.of(history.getBalance().getId()))
                 .encryptedCard(history.getCard())
                 .build();
         modelMapper.map(card, paymentPayload);
@@ -128,7 +128,7 @@ public class PaymentService {
         sendPaymentPayload(paymentPayload);
 
         PaymentResponse<PaymentPayload> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(history.getId());
+        paymentResponse.setId(PaymentId.of(history.getId()));
         paymentResponse.setData(paymentPayload);
 
         return paymentResponse;
@@ -143,18 +143,19 @@ public class PaymentService {
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         Payment payment = modelMapper.map(history, Payment.class);
+        payment.setId(PaymentId.of(history.getId()));
         Card card = new Card(encryption.decrypt(history.getCard()));
         modelMapper.map(card, payment);
 
         Balance balance = history.getBalance();
-        payment.setOriginId(balance.getId());
+        payment.setOriginId(PaymentId.of(balance.getId()));
         payment.setTotalAmount(balance.getAmount());
         payment.setTotalVat(balance.getVat());
         payment.setRemainAmount(balance.getRemainAmount());
         payment.setRemainVat(balance.getRemainVat());
 
         PaymentResponse<Payment> paymentResponse = new PaymentResponse<>();
-        paymentResponse.setId(balance.getId());
+        paymentResponse.setId(PaymentId.of(history.getId()));
         paymentResponse.setData(payment);
 
         return paymentResponse;
@@ -163,7 +164,7 @@ public class PaymentService {
     private Sent sendPaymentPayload(PaymentPayload paymentPayload) {
         log.debug("paymentPayload: {}", paymentPayload);
         Sent sent = Sent.builder()
-                .id(Id.convert(paymentPayload.getId()))
+                .id(paymentPayload.getId().value())
                 .data(paymentPayload.serialize())
                 .build();
         sentRepository.save(sent);
