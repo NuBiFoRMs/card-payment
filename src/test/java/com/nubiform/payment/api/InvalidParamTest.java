@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nubiform.payment.controller.PaymentController;
 import com.nubiform.payment.vo.CancelRequest;
 import com.nubiform.payment.vo.Id;
-import com.nubiform.payment.vo.PaymentRequest;
 import com.nubiform.payment.vo.SubmitRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,6 @@ class InvalidParamTest {
 
     SubmitRequest submitRequest;
     CancelRequest cancelRequest;
-    PaymentRequest paymentRequest;
 
     @BeforeEach
     void setUp() {
@@ -44,9 +42,6 @@ class InvalidParamTest {
         cancelRequest = new CancelRequest();
         cancelRequest.setId(Id.convert(1L));
         cancelRequest.setAmount(1000L);
-
-        paymentRequest = new PaymentRequest();
-        paymentRequest.setId(Id.convert(1L));
     }
 
     @Test
@@ -183,10 +178,7 @@ class InvalidParamTest {
 
     @Test
     public void getPaymentWrongId() throws Exception {
-        paymentRequest.setId("1234567890");
-
-        mockMvc.perform(get(PaymentController.API_V1_PAYMENT_URI)
-                .param("id", paymentRequest.getId()))
+        mockMvc.perform(get(PaymentController.API_V1_PAYMENT_URI_WITH_ID, "1234567890"))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }

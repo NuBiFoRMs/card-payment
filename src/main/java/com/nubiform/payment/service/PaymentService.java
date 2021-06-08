@@ -13,6 +13,7 @@ import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.security.Encryption;
 import com.nubiform.payment.vo.*;
+import com.nubiform.payment.vo.id.PaymentId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -137,8 +138,8 @@ public class PaymentService {
         return Math.round(amount / VAT_RATE);
     }
 
-    public PaymentResponse payment(PaymentRequest paymentRequest) throws Exception {
-        History history = historyRepository.findById(paymentRequest.getLongId())
+    public PaymentResponse payment(PaymentId paymentId) throws Exception {
+        History history = historyRepository.findById(paymentId.value())
                 .orElseThrow(() -> new PaymentException(ErrorCode.NoDataFound));
 
         Payment payment = modelMapper.map(history, Payment.class);
