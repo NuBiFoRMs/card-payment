@@ -10,8 +10,8 @@ import com.nubiform.payment.repository.HistoryRepository;
 import com.nubiform.payment.repository.SentRepository;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.vo.CancelRequest;
-import com.nubiform.payment.vo.Id;
 import com.nubiform.payment.vo.SubmitRequest;
+import com.nubiform.payment.vo.id.PaymentId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,6 +60,7 @@ class CancelConcurrencyTest {
     ObjectMapper objectMapper;
 
     SubmitRequest submitRequest;
+    PaymentId paymentId;
     CancelRequest cancelRequest;
 
     @BeforeEach
@@ -71,10 +72,9 @@ class CancelConcurrencyTest {
         submitRequest.setInstallment(0);
         submitRequest.setAmount(TOTAL_AMOUNT);
 
-        Long id = Id.convert(paymentService.submit(submitRequest).getId());
+        paymentId = paymentService.submit(submitRequest).getId();
 
         cancelRequest = new CancelRequest();
-        cancelRequest.setId(Id.convert(id));
     }
 
     @DisplayName("전체취소 : 결제 한 건에 대한 전체취소를 동시에 할 수 없습니다.")
@@ -87,7 +87,7 @@ class CancelConcurrencyTest {
         for (int i = 0; i < N_THREADS; i++) {
             executorService.execute(() -> {
                 try {
-                    MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI)
+                    MvcResult mvcResult = mockMvc.perform(delete(PaymentController.API_V1_PAYMENT_URI_WITH_ID, paymentId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cancelRequest)))
                             .andReturn();
@@ -99,7 +99,7 @@ class CancelConcurrencyTest {
         }
         countDownLatch.await();
 
-        assertion(cancelRequest.getLongId());
+        assertion(paymentId.value());
     }
 
     @DisplayName("부분취소 : 결제 한 건에 대한 부분취소를 동시에 할 수 없습니다.")
@@ -124,7 +124,7 @@ class CancelConcurrencyTest {
         }
         countDownLatch.await();
 
-        assertion(cancelRequest.getLongId());
+        assertion(paymentId.value());
     }
 
     private void assertion(Long id) {

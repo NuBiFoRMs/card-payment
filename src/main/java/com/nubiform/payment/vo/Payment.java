@@ -1,6 +1,7 @@
 package com.nubiform.payment.vo;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.nubiform.payment.vo.id.PaymentId;
 import lombok.Data;
 
 @Data
@@ -8,8 +9,6 @@ public class Payment {
 
     public static final String MASK_REGEX = "(?<=.{6}).(?=.{3})";
     public static final String MASK = "*";
-
-    private Long id;
 
     private String type;
 
@@ -23,7 +22,7 @@ public class Payment {
 
     private Long vat;
 
-    private Long originId;
+    private PaymentId originId;
 
     private Long totalAmount;
 
@@ -32,16 +31,6 @@ public class Payment {
     private Long remainAmount;
 
     private Long remainVat;
-
-    @JsonGetter("id")
-    public String getId() {
-        return Id.convert(this.id);
-    }
-
-    @JsonGetter("originId")
-    public String getOriginId() {
-        return Id.convert(this.originId);
-    }
 
     @JsonGetter("card")
     public String getCard() {

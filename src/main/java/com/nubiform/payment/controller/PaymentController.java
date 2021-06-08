@@ -4,9 +4,11 @@ import com.nubiform.payment.config.ValidationException;
 import com.nubiform.payment.service.PaymentService;
 import com.nubiform.payment.validator.SubmitValidator;
 import com.nubiform.payment.vo.*;
+import com.nubiform.payment.vo.id.PaymentId;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -20,13 +22,13 @@ import javax.validation.Valid;
 @RequestMapping(PaymentController.API_V1_PAYMENT_URI)
 public class PaymentController {
 
-    public static final String API_V1_PAYMENT_URI = "/api/v1/payment";
+    public static final String API_V1_PAYMENT_URI = "/api/v1/payments";
+    public static final String PATH_VARIABLE_ID = "/{id}";
+    public static final String API_V1_PAYMENT_URI_WITH_ID = API_V1_PAYMENT_URI + PATH_VARIABLE_ID;
 
     private final SubmitValidator submitValidator;
 
     private final PaymentService paymentService;
-
-    private final ModelMapper modelMapper;
 
     @InitBinder("submitRequest")
     public void submitInitBinder(WebDataBinder webDataBinder) {
@@ -43,23 +45,20 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.submit(submitRequest));
     }
 
-    @DeleteMapping
-    public ResponseEntity<PaymentResponse<PaymentPayload>> delPayment(@Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
-        log.debug("delPayment: {}", cancelRequest);
+    @DeleteMapping(PATH_VARIABLE_ID)
+    public ResponseEntity<PaymentResponse<PaymentPayload>> delPayment(@Parameter(schema = @Schema(type = "string")) @PathVariable("id") PaymentId paymentId,
+                                                                      @Valid @RequestBody CancelRequest cancelRequest, BindingResult bindingResult) throws Exception {
+        log.debug("delPayment: {} {}", paymentId, cancelRequest);
         if (bindingResult.hasErrors()) {
             log.debug("bindingResult: {}", bindingResult);
             throw new ValidationException();
         }
-        return ResponseEntity.ok(paymentService.cancel(cancelRequest));
+        return ResponseEntity.ok(paymentService.cancel(paymentId, cancelRequest));
     }
 
-    @GetMapping
-    public ResponseEntity<PaymentResponse<Payment>> getPayment(@Valid PaymentRequest paymentRequest, BindingResult bindingResult) throws Exception {
-        log.debug("getPayment: {}", paymentRequest);
-        if (bindingResult.hasErrors()) {
-            log.debug("bindingResult: {}", bindingResult);
-            throw new ValidationException();
-        }
-        return ResponseEntity.ok(paymentService.payment(paymentRequest));
+    @GetMapping(PATH_VARIABLE_ID)
+    public ResponseEntity<PaymentResponse<Payment>> getPayment(@Parameter(schema = @Schema(type = "string")) @PathVariable("id") PaymentId paymentId) throws Exception {
+        log.debug("getPayment: {}", paymentId);
+        return ResponseEntity.ok(paymentService.payment(paymentId));
     }
 }
