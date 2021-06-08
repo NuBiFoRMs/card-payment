@@ -67,7 +67,7 @@ public class PaymentService {
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
                 .type(history.getType())
-                .id(PaymentId.convert(history.getId()))
+                .id(PaymentId.of(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
                 .vat(history.getVat())
@@ -116,11 +116,11 @@ public class PaymentService {
 
         PaymentPayload paymentPayload = PaymentPayload.builder()
                 .type(history.getType())
-                .id(PaymentId.convert(history.getId()))
+                .id(PaymentId.of(history.getId()))
                 .installment(history.getInstallment())
                 .amount(history.getAmount())
                 .vat(history.getVat())
-                .originId(PaymentId.convert(history.getBalance().getId()))
+                .originId(PaymentId.of(history.getBalance().getId()))
                 .encryptedCard(history.getCard())
                 .build();
         modelMapper.map(card, paymentPayload);
@@ -164,7 +164,7 @@ public class PaymentService {
     private Sent sendPaymentPayload(PaymentPayload paymentPayload) {
         log.debug("paymentPayload: {}", paymentPayload);
         Sent sent = Sent.builder()
-                .id(PaymentId.convert(paymentPayload.getId()))
+                .id(paymentPayload.getId().value())
                 .data(paymentPayload.serialize())
                 .build();
         sentRepository.save(sent);
