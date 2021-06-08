@@ -59,7 +59,7 @@
 git clone https://github.com/NuBiFoRMs/card-payment.git
 cd card-payment
 gradle build
-java -jar build/libs/card-payment-1.0.2.jar
+java -jar build/libs/card-payment-1.1.0.jar
 ```
 
 - Docker Run(Docker Hub Image)
