@@ -1,4 +1,4 @@
-package com.nubiform.payment.vo;
+package com.nubiform.payment.vo.id;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

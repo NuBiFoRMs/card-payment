@@ -1,4 +1,4 @@
-package com.nubiform.payment.vo;
+package com.nubiform.payment.vo.id;
 
 import com.nubiform.payment.config.ValidationException;
 import lombok.NonNull;
