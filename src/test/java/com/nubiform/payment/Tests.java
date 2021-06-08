@@ -49,9 +49,7 @@ class Tests {
         submitRequest.setVat(1000L);
 
         String submitResult = submit(submitRequest, 11000L, 1000L);
-
-        String id = objectMapper.readValue(submitResult, TestResponse.class).getStringId();
-        PaymentId paymentId = PaymentId.of(id);
+        PaymentId paymentId = objectMapper.readValue(submitResult, TestResponse.class).getId();
 
         cancel(paymentId, CancelRequest.builder().amount(1100L).vat(100L).build(),
                 9900L, 900L);
@@ -87,9 +85,7 @@ class Tests {
         submitRequest.setVat(909L);
 
         String submitResult = submit(submitRequest, 20000L, 909L);
-        String id = objectMapper.readValue(submitResult, TestResponse.class).getStringId();
-
-        PaymentId paymentId = PaymentId.of(id);
+        PaymentId paymentId = objectMapper.readValue(submitResult, TestResponse.class).getId();
 
         cancel(paymentId, CancelRequest.builder().amount(10000L).vat(0L).build(),
                 10000L, 909L);
@@ -113,9 +109,7 @@ class Tests {
         submitRequest.setAmount(20000L);
 
         String submitResult = submit(submitRequest, 20000L, 1818L);
-        String id = objectMapper.readValue(submitResult, TestResponse.class).getStringId();
-
-        PaymentId paymentId = PaymentId.of(id);
+        PaymentId paymentId = objectMapper.readValue(submitResult, TestResponse.class).getId();
 
         cancel(paymentId, CancelRequest.builder().amount(10000L).vat(1000L).build(),
                 10000L, 818L);
@@ -142,7 +136,7 @@ class Tests {
 
         TestResponse response = objectMapper.readValue(result, TestResponse.class);
 
-        assertResponse(expectedErrorCode, response.getLongId(), expectedAmount, expectedVat, result);
+        assertResponse(expectedErrorCode, response.getId().value(), expectedAmount, expectedVat, result);
 
         return result;
     }

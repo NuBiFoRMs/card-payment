@@ -79,7 +79,7 @@ class CancelTest {
                 .andReturn();
 
         TestResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), TestResponse.class);
-        History history = historyRepository.findById(response.getLongId()).orElse(null);
+        History history = historyRepository.findById(response.getId().value()).orElse(null);
 
         assertEquals(submitRequest.getAmount() - cancelRequest.getAmount(), history.getBalance().getRemainAmount());
     }
