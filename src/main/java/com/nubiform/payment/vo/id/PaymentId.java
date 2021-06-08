@@ -20,7 +20,7 @@ public class PaymentId {
         return new PaymentId(id);
     }
 
-    public static PaymentId of(String id) {
+    public static PaymentId of(@NonNull String id) {
         return new PaymentId(convert(id));
     }
 
