@@ -40,4 +40,9 @@ class PaymentIdTest {
     public void exceptionConvertTest() {
         assertThrows(ValidationException.class, () -> PaymentId.convert(-1));
     }
+
+    @Test
+    public void nullPointerExceptionTest() {
+        assertThrows(NullPointerException.class, () -> PaymentId.of(null));
+    }
 }
