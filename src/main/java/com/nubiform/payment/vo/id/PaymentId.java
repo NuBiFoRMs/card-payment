@@ -1,8 +1,8 @@
 package com.nubiform.payment.vo.id;
 
 import com.nubiform.payment.config.ValidationException;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 
 public class PaymentId {
 
